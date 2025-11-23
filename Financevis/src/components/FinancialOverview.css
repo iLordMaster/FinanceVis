@@ -1,0 +1,270 @@
+.financial-overview {
+  padding: 3rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+.overview-title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  color: #1a1a1a;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.overview-subtitle {
+  display: block;
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.overview-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.overview-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  color: #1a1a1a;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  color: #22c55e;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Latest Entry Card Styling */
+.latest-entry-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border: 2px solid #22c55e;
+  position: relative;
+  overflow: hidden;
+}
+
+.latest-entry-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.latest-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.latest-badge {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.latest-entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.latest-entry-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.amount-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amount-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #22c55e;
+  font-family: "Bricolage Grotesque", sans-serif;
+  line-height: 1;
+}
+
+.latest-entry-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+  padding-left: 0.25rem;
+}
+
+.latest-entry-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2);
+  border-color: #16a34a;
+}
+
+@media (max-width: 1024px) {
+  .financial-overview {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .overview-title {
+    font-size: 2.25rem;
+  }
+
+  .overview-cards {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .financial-overview {
+    padding: 2rem 1.5rem;
+  }
+
+  .overview-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .overview-title {
+    font-size: 2rem;
+  }
+
+  .overview-subtitle {
+    font-size: 1rem;
+  }
+
+  .overview-card {
+    padding: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 1.3rem;
+  }
+
+  .card-icon {
+    font-size: 1.3rem;
+  }
+
+  .card-value {
+    font-size: 1.75rem;
+  }
+
+  .amount-value {
+    font-size: 2rem;
+  }
+
+  .latest-entry-amount {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .financial-overview {
+    padding: 1.5rem 1rem;
+  }
+
+  .overview-title {
+    font-size: 1.75rem;
+  }
+
+  .overview-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .overview-card {
+    padding: 1.25rem;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    gap: 0.5rem;
+  }
+
+  .card-icon {
+    font-size: 1.2rem;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .card-description {
+    font-size: 0.9rem;
+  }
+
+  .latest-entry-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .latest-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.65rem;
+  }
+
+  .amount-value {
+    font-size: 1.75rem;
+  }
+
+  .latest-entry-amount {
+    padding: 0.9rem;
+  }
+
+  .latest-entry-date {
+    font-size: 0.85rem;
+  }
+}

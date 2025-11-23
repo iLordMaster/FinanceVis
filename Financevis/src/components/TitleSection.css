@@ -1,0 +1,108 @@
+.title-section {
+  background: linear-gradient(to left, rgb(224, 224, 224), #22c55e);
+  padding: 4rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.title-section h1 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  color: rgb(245, 245, 245);
+  margin-bottom: 1.5rem;
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.title-section p {
+  color: rgb(245, 245, 245);
+  font-size: 1.3rem;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+.add-income-btn {
+  background-color: rgba(39, 176, 125, 1);
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-income-btn:hover {
+  background-color: #2d2d2d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.add-income-btn:active {
+  transform: translateY(0);
+}
+
+@media (prefers-color-scheme: light) {
+  .title-section h1 {
+    color: #1a1a1a;
+  }
+
+  .title-section p {
+    color: #333;
+  }
+}
+
+@media (max-width: 1024px) {
+  .title-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .title-section h1 {
+    font-size: 3.5rem;
+  }
+
+  .title-section p {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .title-section {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .title-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .title-section p {
+    font-size: 1.1rem;
+    max-width: 100%;
+  }
+
+  .add-income-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title-section {
+    padding: 2rem 1rem;
+  }
+
+  .title-section h1 {
+    font-size: 2rem;
+  }
+
+  .title-section p {
+    font-size: 1rem;
+  }
+
+  .add-income-btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}

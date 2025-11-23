@@ -1,0 +1,151 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: #ffff;
+}
+
+.navbar-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: rgba(101, 117, 139, 1);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navbar-title-link {
+  text-decoration: none;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: rgba(101, 117, 139, 1);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+.nav-link:hover {
+  color: rgba(39, 176, 125, 1);
+}
+
+.login-button {
+  background-color: rgba(39, 176, 125, 1);
+  color: white;
+  border: none;
+  padding: 0.6em 1.5em;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.25s;
+  text-decoration: none;
+  display: inline-block;
+  font-family: inherit;
+}
+
+.login-button:hover {
+  background-color: rgb(24, 143, 99);
+}
+
+@media (prefers-color-scheme: light) {
+  .navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .nav-link {
+    color: #213547;
+  }
+
+  .nav-link:hover {
+    color: #747bff;
+  }
+
+  .login-button {
+    background-color: #646cff;
+  }
+
+  .login-button:hover {
+    background-color: #535bf2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0.5rem 1.5rem;
+  }
+
+  .navbar-right {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-title {
+    font-size: 1.5rem;
+  }
+
+  .logo {
+    height: 45px;
+  }
+
+  .navbar-right {
+    gap: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+  }
+
+  .login-button {
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .navbar-title {
+    font-size: 1.25rem;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .navbar-right {
+    gap: 0.75rem;
+  }
+
+  .nav-link {
+    display: none;
+  }
+
+  .login-button {
+    padding: 0.45em 0.9em;
+    font-size: 0.85rem;
+  }
+}
