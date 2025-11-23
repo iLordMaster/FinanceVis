@@ -4,8 +4,7 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./Login.css";
-
-const API_BASE_URL = "http://localhost:5001/api";
+import { UserApi } from "../api/userApi";
 
 function Login() {
   const navigate = useNavigate();
@@ -59,27 +58,16 @@ function Login() {
     setSubmitError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email.trim(),
-          password: formData.password,
-        }),
-      });
-
-      const data = await response.json();
+      const response = await UserApi.login(formData);
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(response.message || "Login failed");
       }
 
       // Store token and user data
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
       }
 
       // Navigate to home page on success
