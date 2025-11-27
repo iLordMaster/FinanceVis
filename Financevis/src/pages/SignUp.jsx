@@ -4,7 +4,7 @@ import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./SignUp.css";
-import { UserApi } from "../api/userApi";
+import { AuthApi } from "../api/authApi";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -73,14 +73,24 @@ function SignUp() {
     setSubmitError("");
 
     try {
-      const response = await UserApi.register({
+      const response = await AuthApi.register({
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
       });
 
-      if (!response.success) {
-        throw new Error(response.message || "Registration failed");
+
+
+      // Store token with expiry (default 24 hours for new registrations)
+      if (response.token) {
+        const now = Date.now();
+        const expiry = now + 24 * 60 * 60 * 1000; // 24 hours
+        const tokenObj = {
+          token: response.token,
+          expiry,
+        };
+        localStorage.setItem("token", JSON.stringify(tokenObj));
+        localStorage.setItem("user", JSON.stringify(response.user));
       }
 
       // Navigate to home page on success

@@ -1,25 +1,59 @@
 export class UserApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  static api_url = this.API_BASE_URL + '/users';
 
-  static async register(user) {
-    const response = await fetch(`${UserApi.API_BASE_URL}/auth/register`, {
+  static async addIncome(id, user) {
+    // Get token from localStorage
+    const tokenStr = localStorage.getItem("token");
+    let token = null;
+    if (tokenStr) {
+      try {
+        const tokenObj = JSON.parse(tokenStr);
+        token = tokenObj.token;
+      } catch (e) {
+        console.error("Failed to parse token:", e);
+      }
+    }
+
+    const response = await fetch(`${this.api_url}/${id}/entries`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(user),
     });
-    return response.json();
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to add income");
+    }
+    return data;
   }
 
-  static async login(user) {
-    const response = await fetch(`${UserApi.API_BASE_URL}/auth/login`, {
-      method: "POST",
+  static async getEntries(id) {
+    // Get token from localStorage
+    const tokenStr = localStorage.getItem("token");
+    let token = null;
+    if (tokenStr) {
+      try {
+        const tokenObj = JSON.parse(tokenStr);
+        token = tokenObj.token;
+      } catch (e) {
+        console.error("Failed to parse token:", e);
+      }
+    }
+
+    const response = await fetch(`${this.api_url}/${id}/entries`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify(user),
     });
-    return response.json()
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch entries");
+    }
+    return data;
   }
 }

@@ -63,6 +63,10 @@
   background-color: rgb(24, 143, 99);
 }
 
+.user-menu-btn:focus {
+  outline: none;
+}
+
 @media (prefers-color-scheme: light) {
   .navbar {
     background-color: #ffffff;

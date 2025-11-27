@@ -4,13 +4,14 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./Login.css";
-import { UserApi } from "../api/userApi";
+import { AuthApi } from "../api/authApi";
 
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -18,10 +19,10 @@ function Login() {
   const [submitError, setSubmitError] = useState("");
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
     // Clear error when user starts typing
     if (errors[name]) {
@@ -58,20 +59,33 @@ function Login() {
     setSubmitError("");
 
     try {
-      const response = await UserApi.login(formData);
+      const response = await AuthApi.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (!response.ok) {
-        throw new Error(response.message || "Login failed");
-      }
+      console.log(response)
 
-      // Store token and user data
+
+
+      // Store token with expiry
       if (response.token) {
-        localStorage.setItem("token", response.token);
+        const now = Date.now();
+        const expiry = formData.rememberMe
+          ? now + 7 * 24 * 60 * 60 * 1000 // 1 week
+          : now + 24 * 60 * 60 * 1000; // 24 hours
+        const tokenObj = {
+          token: response.token,
+          expiry,
+        };
+        localStorage.setItem("token", JSON.stringify(tokenObj));
         localStorage.setItem("user", JSON.stringify(response.user));
       }
 
       // Navigate to home page on success
-      navigate("/");
+      if (response.user) {
+        navigate("/");
+      }
     } catch (error) {
       setSubmitError(error.message || "An error occurred during login");
     } finally {
@@ -144,7 +158,13 @@ function Login() {
 
             <div className="form-options">
               <label className="checkbox-label">
-                <input type="checkbox" className="checkbox-input" />
+                <input
+                  type="checkbox"
+                  className="checkbox-input"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                />
                 <span>Remember me</span>
               </label>
               <Link to="/forgot-password" className="forgot-link">

@@ -71,15 +71,15 @@
 
 .form-input {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 2.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-  color: #1a1a1a;
-  background-color: #ffffff;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
+  padding: 0.875rem 1rem 0.875rem 2.75rem !important;
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  font-family: inherit !important;
+  color: #1a1a1a !important;
+  background-color: #ffffff !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
 }
 
 .form-input:focus {
@@ -246,8 +246,8 @@
   }
 
   .form-input {
-    padding: 0.75rem 0.875rem 0.75rem 2.5rem;
-    font-size: 0.95rem;
+    padding: 0.75rem 0.875rem 0.75rem 2.5rem !important;
+    font-size: 0.95rem !important;
   }
 
   .input-icon {
