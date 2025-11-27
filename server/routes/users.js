@@ -173,9 +173,26 @@ router.get("/:id/entries", authMiddleware, async (req, res) => {
 			});
 		}
 
+		let entries = user.entries;
+		const { startDate, endDate } = req.query;
+
+		if (startDate || endDate) {
+			const start = startDate ? new Date(startDate) : new Date(0);
+			const end = endDate ? new Date(endDate) : new Date();
+			// Adjust end date to include the full day if it's just a date string
+			if (endDate && endDate.length <= 10) {
+				end.setHours(23, 59, 59, 999);
+			}
+
+			entries = entries.filter((entry) => {
+				const entryDate = new Date(entry.entryDate || entry.createdAt);
+				return entryDate >= start && entryDate <= end;
+			});
+		}
+
 		return res.status(200).json({
 			message: "Entries fetched successfully",
-			entries: user.entries,
+			entries: entries,
 		});
 	} catch (error) {
 		console.error("Error fetching entries:", error);

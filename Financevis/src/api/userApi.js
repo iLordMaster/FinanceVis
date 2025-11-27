@@ -30,7 +30,7 @@ export class UserApi {
     return data;
   }
 
-  static async getEntries(id) {
+  static async getEntries(id, params = {}) {
     // Get token from localStorage
     const tokenStr = localStorage.getItem("token");
     let token = null;
@@ -43,7 +43,10 @@ export class UserApi {
       }
     }
 
-    const response = await fetch(`${this.api_url}/${id}/entries`, {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = `${this.api_url}/${id}/entries${queryParams ? `?${queryParams}` : ''}`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
