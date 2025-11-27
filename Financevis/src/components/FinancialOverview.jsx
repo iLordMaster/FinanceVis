@@ -26,6 +26,14 @@ function FinancialOverview({ refreshTrigger }) {
       console.log("Fetching entries for user:", user.id);
       const response = await UserApi.getEntries(user.id);
       console.log("Entries fetched:", response.entries);
+      console.log("Entry details:", response.entries.map(e => ({
+        id: e._id,
+        cat: e.entryCat,
+        amount: e.entryAmount,
+        entryDate: e.entryDate,
+        createdAt: e.createdAt,
+        description: e.entryDescription
+      })));
       setEntries(response.entries || []);
     } catch (err) {
       setError(err.message || "Failed to fetch entries");
@@ -47,14 +55,37 @@ function FinancialOverview({ refreshTrigger }) {
   // Get unique categories
   const uniqueCategories = [...new Set(entries.map(entry => entry.entryCat))].filter(Boolean);
 
-  // Get latest entry
-  const latestEntry = entries.length > 0 
-    ? entries.reduce((latest, entry) => {
-        const entryDate = new Date(entry.entryDate);
-        const latestDate = new Date(latest.entryDate);
-        return entryDate > latestDate ? entry : latest;
-      })
-    : null;
+  // Get latest entry - sort by timestamp and take the last one
+  let latestEntry = null;
+  if (entries.length > 0) {
+    const sortedEntries = [...entries].sort((a, b) => {
+      // Helper function to get timestamp from entry
+      const getTimestamp = (entry) => {
+        if (entry.createdAt) {
+          return new Date(entry.createdAt).getTime();
+        } else if (entry._id) {
+          // Extract timestamp from MongoDB ObjectId (first 4 bytes)
+          return parseInt(entry._id.substring(0, 8), 16) * 1000;
+        } else {
+          return new Date(entry.entryDate).getTime();
+        }
+      };
+      
+      return getTimestamp(a) - getTimestamp(b);
+    });
+    
+    latestEntry = sortedEntries[sortedEntries.length - 1];
+    console.log("Sorted entries by timestamp:", sortedEntries.map(e => ({
+      cat: e.entryCat,
+      amount: e.entryAmount,
+      timestamp: e.createdAt || e._id || e.entryDate
+    })));
+    console.log("Latest entry selected:", {
+      cat: latestEntry.entryCat,
+      amount: latestEntry.entryAmount,
+      timestamp: latestEntry.createdAt || latestEntry._id || latestEntry.entryDate
+    });
+  }
 
   if (loading) {
     return (

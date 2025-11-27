@@ -73,7 +73,7 @@ function Navbar() {
         <Link to="/" className="nav-link">
           Home
         </Link>
-        <Link to="#" className="nav-link">
+        <Link to="/dashboard" className="nav-link">
           Dashboard
         </Link>
         {!isLoggedIn ? (

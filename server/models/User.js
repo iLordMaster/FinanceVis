@@ -5,6 +5,8 @@ const entrySchema = new mongoose.Schema({
 	entryCat: String,
 	entryDate: { type: Date, default: Date.now },
 	entryDescription: String,
+}, {
+	timestamps: true // Adds createdAt and updatedAt fields
 });
 
 const userSchema = new mongoose.Schema(

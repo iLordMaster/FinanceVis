@@ -217,4 +217,42 @@ router.get("/:id/entries/:entryId", authMiddleware, async (req, res) => {
 	}
 });
 
+// Delete an entry by ID
+router.delete("/:id/entries/:entryId", authMiddleware, async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id).select("-password");
+
+		if (!user) {
+			return res.status(404).json({
+				message: "User not found",
+			});
+		}
+
+		const entry = user.entries.id(req.params.entryId);
+
+		if (!entry) {
+			return res.status(404).json({
+				message: "Entry not found",
+			});
+		}
+
+		// Remove the entry from the array
+		entry.remove();
+
+		// Save the user document
+		await user.save();
+
+		return res.status(200).json({
+			message: "Entry deleted successfully",
+			entryId: req.params.entryId,
+		});
+	} catch (error) {
+		console.error("Error deleting entry:", error);
+		return res.status(500).json({
+			message: "Internal server error",
+			error: error.message,
+		});
+	}
+});
+
 module.exports = router;

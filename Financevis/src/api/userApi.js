@@ -56,4 +56,31 @@ export class UserApi {
     }
     return data;
   }
+
+  static async deleteEntry(userId, entryId) {
+    // Get token from localStorage
+    const tokenStr = localStorage.getItem("token");
+    let token = null;
+    if (tokenStr) {
+      try {
+        const tokenObj = JSON.parse(tokenStr);
+        token = tokenObj.token;
+      } catch (e) {
+        console.error("Failed to parse token:", e);
+      }
+    }
+
+    const response = await fetch(`${this.api_url}/${userId}/entries/${entryId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete entry");
+    }
+    return data;
+  }
 }
