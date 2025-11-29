@@ -128,7 +128,7 @@ router.get("/:id", authMiddleware, async (req, res) => {
 	}
 });
 
-router.post("/:id/entries", authMiddleware, async (req, res) => {
+router.post("/:id/incomeEntries", authMiddleware, async (req, res) => {
 	try {
 		const entry = req.body;
 
@@ -144,7 +144,7 @@ router.post("/:id/entries", authMiddleware, async (req, res) => {
 		}
 
 		// Push new entry to the user's entries array
-		user.entries.push(entry);
+		user.incomeEntries.push(entry);
 
 		// Save user
 		await user.save();
@@ -163,7 +163,7 @@ router.post("/:id/entries", authMiddleware, async (req, res) => {
 	}
 });
 
-router.get("/:id/entries", authMiddleware, async (req, res) => {
+router.get("/:id/incomeEntries", authMiddleware, async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id).select("-password");
 
@@ -173,7 +173,7 @@ router.get("/:id/entries", authMiddleware, async (req, res) => {
 			});
 		}
 
-		let entries = user.entries;
+		let entries = user.incomeEntries;
 		const { startDate, endDate } = req.query;
 
 		if (startDate || endDate) {
@@ -203,7 +203,7 @@ router.get("/:id/entries", authMiddleware, async (req, res) => {
 	}
 });
 
-router.get("/:id/entries/:entryId", authMiddleware, async (req, res) => {
+router.get("/:id/incomeEntries/:entryId", authMiddleware, async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id).select("-password");
 
@@ -213,7 +213,7 @@ router.get("/:id/entries/:entryId", authMiddleware, async (req, res) => {
 			});
 		}
 
-		const entry = user.entries.id(req.params.entryId);
+		const entry = user.incomeEntries.id(req.params.entryId);
 
 		if (!entry) {
 			return res.status(404).json({
@@ -235,7 +235,7 @@ router.get("/:id/entries/:entryId", authMiddleware, async (req, res) => {
 });
 
 // Delete an entry by ID
-router.delete("/:id/entries/:entryId", authMiddleware, async (req, res) => {
+router.delete("/:id/incomeEntries/:entryId", authMiddleware, async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id).select("-password");
 
@@ -245,7 +245,7 @@ router.delete("/:id/entries/:entryId", authMiddleware, async (req, res) => {
 			});
 		}
 
-		const entry = user.entries.id(req.params.entryId);
+		const entry = user.incomeEntries.id(req.params.entryId);
 
 		if (!entry) {
 			return res.status(404).json({

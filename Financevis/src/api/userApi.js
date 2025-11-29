@@ -2,8 +2,7 @@ export class UserApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   static api_url = this.API_BASE_URL + '/users';
 
-  static async addIncome(id, user) {
-    // Get token from localStorage
+  static async request(endpoint, options = {}) {
     const tokenStr = localStorage.getItem("token");
     let token = null;
     if (tokenStr) {
@@ -15,75 +14,55 @@ export class UserApi {
       }
     }
 
-    const response = await fetch(`${this.api_url}/${id}/entries`, {
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const config = {
+      ...options,
+      headers,
+    };
+
+    const response = await fetch(endpoint, config);
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+      throw new Error("Session expired. Please login again.");
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || "API request failed");
+    }
+
+    return data;
+  }
+
+  static async addIncome(id, user) {
+    return this.request(`${this.api_url}/${id}/incomeEntries`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
       body: JSON.stringify(user),
     });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to add income");
-    }
-    return data;
   }
 
-  static async getEntries(id, params = {}) {
-    // Get token from localStorage
-    const tokenStr = localStorage.getItem("token");
-    let token = null;
-    if (tokenStr) {
-      try {
-        const tokenObj = JSON.parse(tokenStr);
-        token = tokenObj.token;
-      } catch (e) {
-        console.error("Failed to parse token:", e);
-      }
-    }
-
+  static async getIncomeEntries(id, params = {}) {
     const queryParams = new URLSearchParams(params).toString();
-    const url = `${this.api_url}/${id}/entries${queryParams ? `?${queryParams}` : ''}`;
-
-    const response = await fetch(url, {
+    const url = `${this.api_url}/${id}/incomeEntries${queryParams ? `?${queryParams}` : ''}`;
+    return this.request(url, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
     });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch entries");
-    }
-    return data;
   }
 
-  static async deleteEntry(userId, entryId) {
-    // Get token from localStorage
-    const tokenStr = localStorage.getItem("token");
-    let token = null;
-    if (tokenStr) {
-      try {
-        const tokenObj = JSON.parse(tokenStr);
-        token = tokenObj.token;
-      } catch (e) {
-        console.error("Failed to parse token:", e);
-      }
-    }
-
-    const response = await fetch(`${this.api_url}/${userId}/entries/${entryId}`, {
+  static async deleteIncomeEntry(userId, entryId) {
+    return this.request(`${this.api_url}/${userId}/incomeEntries/${entryId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
     });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to delete entry");
-    }
-    return data;
   }
 }

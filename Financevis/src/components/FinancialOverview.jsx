@@ -24,7 +24,8 @@ function FinancialOverview({ refreshTrigger }) {
 
       // Fetch entries from API
       console.log("Fetching entries for user:", user.id);
-      const response = await UserApi.getEntries(user.id);
+      const response = await UserApi.getIncomeEntries(user.id);
+      console.log("Response:", response);
       console.log("Entries fetched:", response.entries);
       console.log("Entry details:", response.entries.map(e => ({
         id: e._id,
