@@ -1,16 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './AddIncomeModal.css';
-import { UserApi } from '../api/userApi';
+import { TransactionApi } from '../api/transactionApi';
+import { CategoryApi } from '../api/categoryApi';
 
 function AddIncomeModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     amount: '',
-    category: 'Salary',
+    categoryId: '',
     date: new Date().toISOString().split('T')[0],
     description: ''
   });
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Fetch income categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await CategoryApi.getCategories('INCOME');
+        setCategories(response.categories || []);
+        // Set first category as default if available
+        if (response.categories && response.categories.length > 0 && !formData.categoryId) {
+          setFormData(prev => ({ ...prev, categoryId: response.categories[0]._id }));
+        }
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -30,28 +51,27 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
     setError('');
 
     try {
-      // Get user from localStorage
-      const userStr = localStorage.getItem('user');
-      if (!userStr) {
-        throw new Error('User not authenticated');
+      // Validate category selection
+      if (!formData.categoryId) {
+        throw new Error('Please select a category');
       }
-      const user = JSON.parse(userStr);
 
-      // Map form data to backend schema
-      const entryData = {
-        entryAmount: parseFloat(formData.amount),
-        entryCat: formData.category,
-        entryDate: new Date(formData.date),
-        entryDescription: formData.description
+      // Create transaction data
+      const transactionData = {
+        categoryId: formData.categoryId,
+        type: 'INCOME',
+        amount: parseFloat(formData.amount),
+        date: new Date(formData.date),
+        description: formData.description
       };
 
-      // Call API to add income
-      await UserApi.addIncome(user.id, entryData);
+      // Call API to create transaction
+      await TransactionApi.createTransaction(transactionData);
 
       // Reset form and close modal on success
       setFormData({
         amount: '',
-        category: 'Salary',
+        categoryId: categories.length > 0 ? categories[0]._id : '',
         date: new Date().toISOString().split('T')[0],
         description: ''
       });
@@ -92,19 +112,26 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="category">Category</label>
+            <label htmlFor="categoryId">Category</label>
             <select
-              id="category"
-              name="category"
-              value={formData.category}
+              id="categoryId"
+              name="categoryId"
+              value={formData.categoryId}
               onChange={handleChange}
+              required
             >
-              <option value="Salary">Salary</option>
-              <option value="Freelance">Freelance</option>
-              <option value="Investments">Investments</option>
-              <option value="Gift">Gift</option>
-              <option value="Other">Other</option>
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
+            {categories.length === 0 && (
+              <small style={{ color: '#8a8d98', fontSize: '0.8rem' }}>
+                No income categories found. Create one first.
+              </small>
+            )}
           </div>
 
           <div className="form-group">

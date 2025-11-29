@@ -1,6 +1,6 @@
-export class UserApi {
+export class NotificationApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  static api_url = this.API_BASE_URL + '/users';
+  static api_url = this.API_BASE_URL + '/notifications';
 
   static async request(endpoint, options = {}) {
     const tokenStr = localStorage.getItem("token");
@@ -45,10 +45,48 @@ export class UserApi {
     return data;
   }
 
-  // Get user profile
-  static async getUser(id) {
+  // Create new notification
+  static async createNotification(notificationData) {
+    return this.request(this.api_url, {
+      method: "POST",
+      body: JSON.stringify(notificationData),
+    });
+  }
+
+  // Get all notifications with optional filters
+  static async getNotifications(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = `${this.api_url}${queryParams ? `?${queryParams}` : ''}`;
+    return this.request(url, {
+      method: "GET",
+    });
+  }
+
+  // Get single notification
+  static async getNotification(id) {
     return this.request(`${this.api_url}/${id}`, {
       method: "GET",
+    });
+  }
+
+  // Mark notification as read
+  static async markAsRead(id) {
+    return this.request(`${this.api_url}/${id}/read`, {
+      method: "PUT",
+    });
+  }
+
+  // Mark all notifications as read
+  static async markAllAsRead() {
+    return this.request(`${this.api_url}/read-all`, {
+      method: "PUT",
+    });
+  }
+
+  // Delete notification
+  static async deleteNotification(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "DELETE",
     });
   }
 }

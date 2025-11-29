@@ -9,7 +9,7 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo">DL</div>
+      <div className="sidebar-logo">FV</div>
       <div className="month-list">
         {months.map((month) => (
           <div 

@@ -22,18 +22,12 @@ router.post("/register", async (req, res) => {
         .json({ message: "User with this email already exists" });
     }
 
-    // Check if username exists
-    const existingUserByUsername = await User.findOne({ username: name });
-    if (existingUserByUsername) {
-      return res.status(400).json({ message: "Username already taken" });
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username: name,
+      name,
       email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
     });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -46,7 +40,7 @@ router.post("/register", async (req, res) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     });
@@ -74,7 +68,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -88,7 +82,7 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     });

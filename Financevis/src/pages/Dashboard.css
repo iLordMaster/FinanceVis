@@ -108,6 +108,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
 }
 
 .user-info {
@@ -359,4 +360,76 @@
   .card-income-source, .card-income-expenses, .card-assets, .card-misc {
     grid-column: span 1;
   }
+}
+
+/* Account Dropdown Menu */
+.account-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #161822;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 200px;
+  padding: 8px 0;
+  z-index: 1000;
+  animation: dropdownFadeIn 0.2s ease-out;
+  border: 1px solid #2a2d3a;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+  background-color: #2a2d3a;
+}
+
+.dropdown-item.logout {
+  color: #f97316;
+}
+
+.dropdown-item.logout:hover {
+  background-color: rgba(249, 115, 22, 0.1);
+}
+
+.dropdown-icon {
+  font-size: 1rem;
+  color: #8a8d98;
+}
+
+.dropdown-item.logout .dropdown-icon {
+  color: #f97316;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #2a2d3a;
+  margin: 8px 0;
+}
+
+.avatar {
+  transition: transform 0.2s;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }

@@ -11,7 +11,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <Sidebar />
       <div className="main-content">
-        <TopBar />
+        <TopBar isActive={true} />
         
         <div className="dashboard-grid">
           {/* Available Balance */}

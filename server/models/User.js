@@ -1,25 +1,8 @@
-const mongoose = require("mongoose");
-
-const entrySchema = new mongoose.Schema({
-	entryAmount: Number,
-	entryCat: String,
-	entryDate: { type: Date, default: Date.now },
-	entryDescription: String,
-}, {
-	timestamps: true // Adds createdAt and updatedAt fields
+const mongoose = require('mongoose');
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true, required: true },
+  passwordHash: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
-
-const userSchema = new mongoose.Schema(
-	{
-		username: { type: String, required: true, unique: true },
-		email: { type: String, required: true, unique: true },
-		password: { type: String, required: true },
-		incomeEntries: { type: [entrySchema], required: false, default: [] },
-		expensesEntries: { type: [entrySchema], required: false, default: [] },
-	},
-	{
-		timestamps: true, // Adds createdAt and updatedAt fields
-	}
-);
-
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', UserSchema);

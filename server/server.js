@@ -25,9 +25,20 @@ connectDB();
 
 // Routes
 const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/users");
+const transactionRoutes = require("./routes/transactions");
+const categoryRoutes = require("./routes/categories");
+const accountRoutes = require("./routes/accounts");
+const budgetRoutes = require("./routes/budgets");
+const assetRoutes = require("./routes/assets");
+const notificationRoutes = require("./routes/notifications");
+
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/accounts", accountRoutes);
+app.use("/api/budgets", budgetRoutes);
+app.use("/api/assets", assetRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
 	res.send("Server running");

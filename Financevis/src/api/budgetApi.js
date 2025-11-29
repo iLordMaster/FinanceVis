@@ -1,6 +1,6 @@
-export class UserApi {
+export class BudgetApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  static api_url = this.API_BASE_URL + '/users';
+  static api_url = this.API_BASE_URL + '/budgets';
 
   static async request(endpoint, options = {}) {
     const tokenStr = localStorage.getItem("token");
@@ -45,10 +45,42 @@ export class UserApi {
     return data;
   }
 
-  // Get user profile
-  static async getUser(id) {
+  // Create new budget
+  static async createBudget(budgetData) {
+    return this.request(this.api_url, {
+      method: "POST",
+      body: JSON.stringify(budgetData),
+    });
+  }
+
+  // Get all budgets with optional filters
+  static async getBudgets(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = `${this.api_url}${queryParams ? `?${queryParams}` : ''}`;
+    return this.request(url, {
+      method: "GET",
+    });
+  }
+
+  // Get single budget
+  static async getBudget(id) {
     return this.request(`${this.api_url}/${id}`, {
       method: "GET",
+    });
+  }
+
+  // Update budget
+  static async updateBudget(id, budgetData) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(budgetData),
+    });
+  }
+
+  // Delete budget
+  static async deleteBudget(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "DELETE",
     });
   }
 }

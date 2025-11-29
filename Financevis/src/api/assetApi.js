@@ -1,6 +1,6 @@
-export class UserApi {
+export class AssetApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  static api_url = this.API_BASE_URL + '/users';
+  static api_url = this.API_BASE_URL + '/assets';
 
   static async request(endpoint, options = {}) {
     const tokenStr = localStorage.getItem("token");
@@ -45,10 +45,40 @@ export class UserApi {
     return data;
   }
 
-  // Get user profile
-  static async getUser(id) {
+  // Create new asset
+  static async createAsset(assetData) {
+    return this.request(this.api_url, {
+      method: "POST",
+      body: JSON.stringify(assetData),
+    });
+  }
+
+  // Get all assets
+  static async getAssets() {
+    return this.request(this.api_url, {
+      method: "GET",
+    });
+  }
+
+  // Get single asset
+  static async getAsset(id) {
     return this.request(`${this.api_url}/${id}`, {
       method: "GET",
+    });
+  }
+
+  // Update asset
+  static async updateAsset(id, assetData) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(assetData),
+    });
+  }
+
+  // Delete asset
+  static async deleteAsset(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "DELETE",
     });
   }
 }

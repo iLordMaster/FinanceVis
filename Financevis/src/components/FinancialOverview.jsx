@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./FinancialOverview.css";
 import { FaDollarSign, FaTags, FaClock } from "react-icons/fa";
-import { UserApi } from "../api/userApi";
+import { TransactionApi } from "../api/transactionApi";
 
 function FinancialOverview({ refreshTrigger }) {
   const [entries, setEntries] = useState([]);
@@ -14,35 +14,19 @@ function FinancialOverview({ refreshTrigger }) {
       setLoading(true);
       setError("");
 
-      // Get user from localStorage
-      const userStr = localStorage.getItem("user");
-      if (!userStr) {
-        setError("User not authenticated");
-        return;
-      }
-      const user = JSON.parse(userStr);
-
-      // Fetch entries from API
-      console.log("Fetching entries for user:", user.id);
-      const response = await UserApi.getIncomeEntries(user.id);
+      // Fetch income transactions
+      console.log("Fetching income transactions");
+      const response = await TransactionApi.getTransactions({ type: 'INCOME' });
       console.log("Response:", response);
-      console.log("Entries fetched:", response.entries);
-      console.log("Entry details:", response.entries.map(e => ({
-        id: e._id,
-        cat: e.entryCat,
-        amount: e.entryAmount,
-        entryDate: e.entryDate,
-        createdAt: e.createdAt,
-        description: e.entryDescription
-      })));
-      setEntries(response.entries || []);
+      console.log("Transactions fetched:", response.transactions);
+      setEntries(response.transactions || []);
     } catch (err) {
       setError(err.message || "Failed to fetch entries");
       console.error("Error fetching entries:", err);
     } finally {
       setLoading(false);
     }
-  }, []); // Empty dependencies since we're using localStorage
+  }, []); // Empty dependencies since we're using auth token
 
   useEffect(() => {
     console.log("FinancialOverview refreshing, trigger:", refreshTrigger);
@@ -51,40 +35,28 @@ function FinancialOverview({ refreshTrigger }) {
 
 
   // Calculate total income
-  const totalIncome = entries.reduce((sum, entry) => sum + (entry.entryAmount || 0), 0);
+  const totalIncome = entries.reduce((sum, entry) => sum + (entry.amount || 0), 0);
 
   // Get unique categories
-  const uniqueCategories = [...new Set(entries.map(entry => entry.entryCat))].filter(Boolean);
+  const uniqueCategories = [...new Set(entries.map(entry => entry.categoryId?._id).filter(Boolean))];
 
-  // Get latest entry - sort by timestamp and take the last one
+  // Get latest entry - sort by date and take the last one
   let latestEntry = null;
   if (entries.length > 0) {
     const sortedEntries = [...entries].sort((a, b) => {
-      // Helper function to get timestamp from entry
-      const getTimestamp = (entry) => {
-        if (entry.createdAt) {
-          return new Date(entry.createdAt).getTime();
-        } else if (entry._id) {
-          // Extract timestamp from MongoDB ObjectId (first 4 bytes)
-          return parseInt(entry._id.substring(0, 8), 16) * 1000;
-        } else {
-          return new Date(entry.entryDate).getTime();
-        }
-      };
-      
-      return getTimestamp(a) - getTimestamp(b);
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
     
     latestEntry = sortedEntries[sortedEntries.length - 1];
-    console.log("Sorted entries by timestamp:", sortedEntries.map(e => ({
-      cat: e.entryCat,
-      amount: e.entryAmount,
-      timestamp: e.createdAt || e._id || e.entryDate
+    console.log("Sorted entries by date:", sortedEntries.map(e => ({
+      cat: e.categoryId?.name,
+      amount: e.amount,
+      date: e.date
     })));
     console.log("Latest entry selected:", {
-      cat: latestEntry.entryCat,
-      amount: latestEntry.entryAmount,
-      timestamp: latestEntry.createdAt || latestEntry._id || latestEntry.entryDate
+      cat: latestEntry.categoryId?.name,
+      amount: latestEntry.amount,
+      date: latestEntry.date
     });
   }
 
@@ -142,19 +114,19 @@ function FinancialOverview({ refreshTrigger }) {
           {latestEntry ? (
             <div className="latest-entry-content">
               <div className="latest-entry-amount">
-                <span className="amount-label">{latestEntry.entryCat}</span>
-                <span className="amount-value">${latestEntry.entryAmount.toFixed(2)}</span>
+                <span className="amount-label">{latestEntry.categoryId?.name || 'Uncategorized'}</span>
+                <span className="amount-value">${latestEntry.amount.toFixed(2)}</span>
               </div>
               <div className="card-description latest-entry-date">
-                {new Date(latestEntry.entryDate).toLocaleDateString("en-US", {
+                {new Date(latestEntry.date).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </div>
-              {latestEntry.entryDescription && (
+              {latestEntry.description && (
                 <div className="card-description" style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
-                  {latestEntry.entryDescription}
+                  {latestEntry.description}
                 </div>
               )}
             </div>

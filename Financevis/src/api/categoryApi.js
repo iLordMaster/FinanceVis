@@ -1,6 +1,6 @@
-export class UserApi {
+export class CategoryApi {
   static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  static api_url = this.API_BASE_URL + '/users';
+  static api_url = this.API_BASE_URL + '/categories';
 
   static async request(endpoint, options = {}) {
     const tokenStr = localStorage.getItem("token");
@@ -45,10 +45,43 @@ export class UserApi {
     return data;
   }
 
-  // Get user profile
-  static async getUser(id) {
+  // Create new category
+  static async createCategory(categoryData) {
+    return this.request(this.api_url, {
+      method: "POST",
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  // Get all categories with optional type filter (INCOME/EXPENSE)
+  static async getCategories(type = null) {
+    const params = type ? { type } : {};
+    const queryParams = new URLSearchParams(params).toString();
+    const url = `${this.api_url}${queryParams ? `?${queryParams}` : ''}`;
+    return this.request(url, {
+      method: "GET",
+    });
+  }
+
+  // Get single category
+  static async getCategory(id) {
     return this.request(`${this.api_url}/${id}`, {
       method: "GET",
+    });
+  }
+
+  // Update category
+  static async updateCategory(id, categoryData) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  // Delete category
+  static async deleteCategory(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "DELETE",
     });
   }
 }
