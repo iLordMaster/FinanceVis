@@ -24,14 +24,14 @@ class MongooseCategoryRepository extends CategoryRepository {
       color: cat.color,
     }));
     const savedCategories = await CategoryModel.insertMany(categoryDocs);
-    return savedCategories.map(this._toEntity);
+    return savedCategories.map(cat => this._toEntity(cat));
   }
 
   async findByUserId(userId, filters = {}) {
     const query = { userId };
     if (filters.type) query.type = filters.type;
     const categories = await CategoryModel.find(query).sort({ createdAt: -1 });
-    return categories.map(this._toEntity);
+    return categories.map(cat => this._toEntity(cat));
   }
 
   async findById(id) {
