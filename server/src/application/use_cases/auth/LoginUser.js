@@ -20,9 +20,11 @@ class LoginUser {
       throw new Error('Invalid email or password');
     }
 
+    const { passwordHash, ...userWithoutPassword } = user;
+
     const token = this.tokenService.generateToken({ id: user.id });
 
-    return { user, token };
+    return { user: userWithoutPassword, token };
   }
 }
 

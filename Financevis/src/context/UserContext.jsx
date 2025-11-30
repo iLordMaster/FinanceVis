@@ -127,9 +127,9 @@ export const UserProvider = ({ children }) => {
   };
 
   // Register function
-  const register = async (username, email, password) => {
+  const register = async (name, email, password) => {
     try {
-      const response = await AuthApi.register({ username, email, password });
+      const response = await AuthApi.register({ name, email, password });
 
       if (response.token && response.user) {
         const now = Date.now();

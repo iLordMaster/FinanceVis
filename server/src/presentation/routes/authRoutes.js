@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../../../middleware/authMiddleware');
 
 // Dependencies
 const MongooseUserRepository = require('../../infrastructure/repositories/MongooseUserRepository');
@@ -26,5 +27,6 @@ const authController = new AuthController(registerUserUseCase, loginUserUseCase)
 // Define Routes
 router.post('/register', (req, res) => authController.register(req, res));
 router.post('/login', (req, res) => authController.login(req, res));
+router.get('/me', authMiddleware, (req, res) => authController.getMe(req, res));
 
 module.exports = router;
