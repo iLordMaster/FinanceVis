@@ -34,5 +34,7 @@ router.get('/recent-activity', authMiddleware, (req, res) => dashboardController
 router.get('/account-summary', authMiddleware, (req, res) => dashboardController.getAccountSummary(req, res));
 router.get('/budget-summary', authMiddleware, (req, res) => dashboardController.getBudgetSummary(req, res));
 router.get('/asset-summary', authMiddleware, (req, res) => dashboardController.getAssetSummary(req, res));
+router.get('/monthly-stats/specific', authMiddleware, (req, res) => dashboardController.getMonthlyStatsForSpecificMonth(req, res));
+router.get('/monthly-stats/all', authMiddleware, (req, res) => dashboardController.getAllMonthlyStats(req, res));
 
 module.exports = router;

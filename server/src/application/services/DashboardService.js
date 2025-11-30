@@ -69,6 +69,14 @@ class DashboardService {
   async getAssetSummary(userId) {
     return this.assetRepository.findByUserId(userId);
   }
+
+  async getMonthlyStatsForSpecificMonth(userId, year, month) {
+    return this.transactionRepository.getMonthlyStatsForSpecificMonth(userId, year, month);
+  }
+
+  async getAllMonthlyStats(userId) {
+    return this.transactionRepository.getAllMonthlyStats(userId);
+  }
 }
 
 module.exports = DashboardService;

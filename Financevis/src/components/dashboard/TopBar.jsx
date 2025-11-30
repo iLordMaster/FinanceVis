@@ -1,16 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaCog, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import { FaUser, FaCog, FaSignOutAlt, FaChartLine, FaHome } from 'react-icons/fa';
 import { useUser } from '../../context/UserContext.jsx';
 
-const TopBar = ({ isActive }) => {
+const TopBar = ({ isActive, balance }) => {
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
     const { user } = useUser();
 
-    console.log(user);
+    // console.log(user); // Removed log
 
     const DEFAULT_AVATAR = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
     const USER_PFP = user?.profilePicture;
@@ -24,10 +24,8 @@ const TopBar = ({ isActive }) => {
     };
 
     const handleLogout = () => {
-        // Clear user data from localStorage
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        // Navigate to login page
         navigate('/login');
     };
 
@@ -35,7 +33,6 @@ const TopBar = ({ isActive }) => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -50,18 +47,26 @@ const TopBar = ({ isActive }) => {
     }, []);
 
     const today = new Date();
-    const date = today.toDateString();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const date = today.toLocaleDateString('en-US', options);
 
   return (
     <div className="top-bar">
       <div className="app-title">
-        <h1>Available Balance</h1>
         <span>Personal Finance Tracker</span>
+        <h1>Available Balance</h1>
+        <div className="top-balance-amount">{balance || "$0"}</div>
       </div>
 
       <div className="nav-tabs">
-        <div className={`nav-tab ${isActive ? "active" : ""}`} onClick={handleDashboardClick}>Dashboard</div>
-        <div className={`nav-tab ${!isActive ? "active" : ""}`} onClick={handleHomeClick}>Home</div>
+        <div className={`nav-tab ${isActive ? "active" : ""}`} onClick={handleDashboardClick}>
+            <FaChartLine style={{ marginRight: '8px' }}/>
+            Dashboard
+        </div>
+        <div className={`nav-tab ${!isActive ? "active" : ""}`} onClick={handleHomeClick}>
+            <FaHome style={{ marginRight: '8px' }}/>
+            Spreadsheet
+        </div>
       </div>
 
       <div className="date-selector">
@@ -70,7 +75,7 @@ const TopBar = ({ isActive }) => {
 
       <div className="user-profile" ref={dropdownRef}>
         <div className="user-info">
-          <span className="user-name">{user.name}</span>
+          <span className="user-name">{user?.name || "User"}</span>
           <span className="user-role">Mortgage consultant</span>
         </div>
         <div className="avatar" onClick={toggleDropdown} style={{ cursor: 'pointer' }}>

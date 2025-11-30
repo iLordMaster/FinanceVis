@@ -73,6 +73,28 @@ class DashboardController {
       res.status(500).json({ message: 'Error fetching asset summary', error: err.message });
     }
   }
+
+  async getMonthlyStatsForSpecificMonth(req, res) {
+    try {
+      const year = parseInt(req.query.year) || new Date().getFullYear();
+      const month = parseInt(req.query.month) || new Date().getMonth() + 1;
+      const stats = await this.dashboardService.getMonthlyStatsForSpecificMonth(req.user.id, year, month);
+      res.json(stats);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error fetching monthly stats', error: err.message });
+    }
+  }
+
+  async getAllMonthlyStats(req, res) {
+    try {
+      const stats = await this.dashboardService.getAllMonthlyStats(req.user.id);
+      res.json(stats);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error fetching all monthly stats', error: err.message });
+    }
+  }
 }
 
 module.exports = DashboardController;

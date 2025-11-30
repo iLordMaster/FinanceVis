@@ -72,6 +72,7 @@ class MongooseTransactionRepository extends TransactionRepository {
       {
         $group: {
           _id: { 
+            year: { $year: "$date" },
             month: { $month: "$date" },
             type: "$type"
           },
@@ -81,10 +82,120 @@ class MongooseTransactionRepository extends TransactionRepository {
       {
         $project: {
           _id: 0,
+          year: "$_id.year",
           month: "$_id.month",
           type: "$_id.type",
           total: 1
         }
+      },
+      {
+        $sort: { year: 1, month: 1 }
+      }
+    ]);
+
+    // Transform the data into the desired format
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthlyData = {};
+
+    // Initialize all 12 months with 0 values
+    for (let i = 1; i <= 12; i++) {
+      monthlyData[i] = {
+        month: monthNames[i - 1],
+        income: 0,
+        expenses: 0
+      };
+    }
+
+    // Populate with actual data
+    stats.forEach(stat => {
+      const monthNum = stat.month;
+      if (stat.type === 'INCOME') {
+        monthlyData[monthNum].income = stat.total || 0;
+      } else if (stat.type === 'EXPENSE') {
+        monthlyData[monthNum].expenses = stat.total || 0;
+      }
+    });
+
+    // Convert to array and return
+    return Object.values(monthlyData);
+  }
+
+  async getMonthlyStatsForSpecificMonth(userId, year, month) {
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+
+    const stats = await TransactionModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: { $gte: startOfMonth, $lte: endOfMonth }
+        }
+      },
+      {
+        $group: {
+          _id: "$type",
+          total: { $sum: "$amount" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          type: "$_id",
+          total: 1,
+          count: 1
+        }
+      }
+    ]);
+
+    // Transform the data into the desired format
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const result = {
+      month: monthNames[month - 1],
+      income: 0,
+      expenses: 0
+    };
+
+    // Populate with actual data
+    stats.forEach(stat => {
+      if (stat.type === 'INCOME') {
+        result.income = stat.total || 0;
+      } else if (stat.type === 'EXPENSE') {
+        result.expenses = stat.total || 0;
+      }
+    });
+
+    return result;
+  }
+
+  async getAllMonthlyStats(userId) {
+    const stats = await TransactionModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId)
+        }
+      },
+      {
+        $group: {
+          _id: { 
+            year: { $year: "$date" },
+            month: { $month: "$date" },
+            type: "$type"
+          },
+          total: { $sum: "$amount" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          type: "$_id.type",
+          total: 1
+        }
+      },
+      {
+        $sort: { year: 1, month: 1 }
       }
     ]);
 

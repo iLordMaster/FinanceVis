@@ -18,6 +18,14 @@ class TransactionRepository {
   async getCategoryStats(userId, startDate, endDate) {
     throw new Error('Method not implemented');
   }
+
+  async getMonthlyStatsForSpecificMonth(userId, year, month) {
+    throw new Error('Method not implemented');
+  }
+
+  async getAllMonthlyStats(userId) {
+    throw new Error('Method not implemented');
+  }
 }
 
 module.exports = TransactionRepository;

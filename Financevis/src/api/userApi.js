@@ -31,7 +31,7 @@ export class UserApi {
     const response = await fetch(endpoint, config);
     const data = await response.json();
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = "/login";

@@ -1,24 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/dashboard/Sidebar';
 import TopBar from '../components/dashboard/TopBar';
 import DashboardCard from '../components/dashboard/DashboardCard';
 import ChartPlaceholder from '../components/dashboard/ChartPlaceholder';
 import './dashboard.css';
 import { FaHome, FaUser, FaCar, FaDog } from 'react-icons/fa';
+import DualLineChart from '../components/dashboard/DualLineChart';
+import { UserApi } from '../api/userApi';
+import AssetDonutChart from '../components/dashboard/AssetDonutChart';
+import LineChart from '../components/dashboard/LineChart';
+import BarChart from '../components/dashboard/BarChart';
 
 const Dashboard = () => {
+  const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const dataJson = await UserApi.request('/api/dashboard/monthly-stats');
+          
+          if (Array.isArray(dataJson)) {
+            setData(dataJson);
+          } else {
+            console.error('Expected array from monthly-stats but got:', dataJson);
+            setData([]);
+          }
+        } catch (error) {
+          console.error('Error fetching monthly stats:', error);
+          setData([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
+    const maxIncome = data.length > 0 ? Math.max(...data.map(item => item.income)) : 0;
+    const maxExpenses = data.length > 0 ? Math.max(...data.map(item => item.expenses)) : 0;
+
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="main-content">
-        <TopBar isActive={true} />
+        <TopBar isActive={true} balance="$14,822" />
         
         <div className="dashboard-grid">
-          {/* Available Balance */}
-          <DashboardCard title="Available Balance" className="card-balance">
-            <div className="balance-amount">$14,822</div>
-          </DashboardCard>
-
           {/* Total Net Worth */}
           <DashboardCard title="Total Net Worth" className="card-net-worth">
             <div className="net-worth-amount">$278,378</div>
@@ -27,13 +55,14 @@ const Dashboard = () => {
           {/* Spendings */}
           <DashboardCard title="Spendings" className="card-spendings">
             <div className="card-title">$9,228</div>
-            <ChartPlaceholder text="Line Chart" />
+            <LineChart />
           </DashboardCard>
+
 
           {/* Income */}
           <DashboardCard title="Income" className="card-income">
             <div className="card-title">$24,050</div>
-            <ChartPlaceholder text="Line Chart" />
+            <LineChart />
           </DashboardCard>
 
           {/* Spending Categories */}
@@ -86,27 +115,12 @@ const Dashboard = () => {
 
           {/* Income Source */}
           <DashboardCard title="Income Source" className="card-income-source">
-            <ChartPlaceholder text="Bar Chart" />
-          </DashboardCard>
-
-          {/* Income & Expenses */}
-          <DashboardCard title="Income & Expenses" className="card-income-expenses">
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
-              <div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>$20,239</div>
-                <div style={{ fontSize: '0.8rem', color: '#f97316' }}>Max. Expenses</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>$20,239</div>
-                <div style={{ fontSize: '0.8rem', color: '#4ade80' }}>Max. Income</div>
-              </div>
-            </div>
-            <ChartPlaceholder text="Dual Line Chart" />
+            <BarChart />
           </DashboardCard>
 
           {/* Assets */}
           <DashboardCard title="Assets" className="card-assets">
-            <ChartPlaceholder text="Donut Chart" />
+            <AssetDonutChart />
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '0.8rem' }}>
               <div>
                 <div>Gold</div>
@@ -118,6 +132,23 @@ const Dashboard = () => {
               </div>
             </div>
           </DashboardCard>
+
+          {/* Income & Expenses */}
+          <DashboardCard title="Income & Expenses" className="card-income-expenses">
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
+              <div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxExpenses}</div>
+                <div style={{ fontSize: '0.8rem', color: '#f97316' }}>Max. Expenses</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxIncome}</div>
+                <div style={{ fontSize: '0.8rem', color: '#4ade80' }}>Max. Income</div>
+              </div>
+            </div>
+            <DualLineChart />
+          </DashboardCard>
+
+          
 
           {/* Misc (Dog) */}
           <DashboardCard className="card-misc">
