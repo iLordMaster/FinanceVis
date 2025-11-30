@@ -1,6 +1,7 @@
 class DeleteTransaction {
-  constructor(transactionRepository) {
+  constructor(transactionRepository, accountRepository) {
     this.transactionRepository = transactionRepository;
+    this.accountRepository = accountRepository;
   }
 
   async execute(id, userId) {
@@ -11,7 +12,15 @@ class DeleteTransaction {
     if (transaction.userId !== userId) {
       throw new Error('Unauthorized');
     }
-    return await this.transactionRepository.deleteById(id);
+    await this.transactionRepository.deleteById(id);
+
+    // Reverse account balance change
+    if (transaction.accountId) {
+      const balanceChange = transaction.type === 'INCOME' ? -transaction.amount : transaction.amount;
+      await this.accountRepository.updateBalance(transaction.accountId, balanceChange);
+    }
+
+    return true;
   }
 }
 

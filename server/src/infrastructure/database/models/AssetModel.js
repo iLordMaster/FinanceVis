@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const AssetSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  name: String,
-  value: Number,
-  color: String,
+  name: { type: String, required: true },
+  value: { type: Number, required: true },
+  color: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

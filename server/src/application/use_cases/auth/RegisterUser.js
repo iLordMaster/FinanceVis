@@ -32,9 +32,12 @@ class RegisterUser {
     });
     const createdUser = await this.userRepository.create(newUser);
 
-    // 5. Create default categories
-    const defaultCategories = this._getDefaultCategories(createdUser.id);
-    await this.categoryRepository.createMany(defaultCategories);
+    // 5. Create default categories - REMOVED (Categories are now global)
+    // const existingCategories = await this.categoryRepository.findByUserId(createdUser.id);
+    // if (existingCategories.length === 0) {
+    //   const defaultCategories = this._getDefaultCategories(createdUser.id);
+    //   await this.categoryRepository.createMany(defaultCategories);
+    // }
 
     // 6. Generate token
     const token = this.tokenService.generateToken({ id: createdUser.id });

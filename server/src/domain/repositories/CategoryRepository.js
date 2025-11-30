@@ -10,6 +10,10 @@ class CategoryRepository {
   async findByUserId(userId) {
     throw new Error('Method not implemented');
   }
+
+  async findAll() {
+    throw new Error('Method not implemented');
+  }
 }
 
 module.exports = CategoryRepository;

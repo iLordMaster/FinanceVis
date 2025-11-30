@@ -5,7 +5,6 @@ const Category = require('../../domain/entities/Category');
 class MongooseCategoryRepository extends CategoryRepository {
   async create(category) {
     const newCategory = new CategoryModel({
-      userId: category.userId,
       name: category.name,
       type: category.type,
       icon: category.icon,
@@ -17,7 +16,6 @@ class MongooseCategoryRepository extends CategoryRepository {
 
   async createMany(categories) {
     const categoryDocs = categories.map(cat => ({
-      userId: cat.userId,
       name: cat.name,
       type: cat.type,
       icon: cat.icon,
@@ -28,9 +26,14 @@ class MongooseCategoryRepository extends CategoryRepository {
   }
 
   async findByUserId(userId, filters = {}) {
-    const query = { userId };
+    // Deprecated: Categories are now global, redirecting to findAll
+    return this.findAll(filters);
+  }
+
+  async findAll(filters = {}) {
+    const query = {};
     if (filters.type) query.type = filters.type;
-    const categories = await CategoryModel.find(query).sort({ createdAt: -1 });
+    const categories = await CategoryModel.find(query).sort({ name: 1 });
     return categories.map(cat => this._toEntity(cat));
   }
 
@@ -54,7 +57,7 @@ class MongooseCategoryRepository extends CategoryRepository {
   _toEntity(mongoCategory) {
     return new Category({
       id: mongoCategory._id.toString(),
-      userId: mongoCategory.userId.toString(),
+      // userId: mongoCategory.userId.toString(), // Removed
       name: mongoCategory.name,
       type: mongoCategory.type,
       icon: mongoCategory.icon,

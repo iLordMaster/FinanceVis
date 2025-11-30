@@ -1,15 +1,16 @@
 const Transaction = require('../../../domain/entities/Transaction');
 
 class CreateTransaction {
-  constructor(transactionRepository) {
+  constructor(transactionRepository, accountRepository) {
     this.transactionRepository = transactionRepository;
+    this.accountRepository = accountRepository;
   }
 
   async execute(transactionData) {
     const { userId, accountId, categoryId, type, amount, date, description } = transactionData;
 
-    if (!categoryId || !type || !amount || !date) {
-      throw new Error('categoryId, type, amount, and date are required');
+    if (!categoryId || !type || !amount) {
+      throw new Error('categoryId, type, amount are required');
     }
 
     if (!['INCOME', 'EXPENSE'].includes(type)) {
@@ -26,7 +27,15 @@ class CreateTransaction {
       description,
     });
 
-    return await this.transactionRepository.create(transaction);
+    const createdTransaction = await this.transactionRepository.create(transaction);
+
+    // Update account balance
+    if (accountId) {
+      const balanceChange = type === 'INCOME' ? amount : -amount;
+      await this.accountRepository.updateBalance(accountId, balanceChange);
+    }
+
+    return createdTransaction;
   }
 }
 

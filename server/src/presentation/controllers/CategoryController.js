@@ -7,29 +7,14 @@ class CategoryController {
   }
 
   async create(req, res) {
-    try {
-      const categoryData = {
-        userId: req.user.id,
-        ...req.body
-      };
-      const result = await this.createCategory.execute(categoryData);
-      res.status(201).json({
-        message: "Category created successfully",
-        category: result,
-      });
-    } catch (err) {
-      if (err.message.includes('required') || err.message.includes('must be')) {
-        res.status(400).json({ message: err.message });
-      } else {
-        console.error(err);
-        res.status(500).json({ message: 'Error creating category', error: err.message });
-      }
-    }
+    res.status(403).json({ message: "Category creation is disabled for users." });
   }
 
   async getAll(req, res) {
     try {
       const filters = req.query;
+      // Use findAll instead of getCategories (which might still be named getCategories in use case but implementation changed)
+      // Assuming getCategories use case calls repository.findAll or findByUserId which now calls findAll
       const categories = await this.getCategories.execute(req.user.id, filters);
       res.json({
         count: categories.length,
@@ -42,43 +27,11 @@ class CategoryController {
   }
 
   async update(req, res) {
-    try {
-      const result = await this.updateCategory.execute(req.params.id, req.user.id, req.body);
-      res.json({
-        message: "Category updated successfully",
-        category: result,
-      });
-    } catch (err) {
-      if (err.message === 'Category not found') {
-        res.status(404).json({ message: err.message });
-      } else if (err.message === 'Unauthorized') {
-        res.status(403).json({ message: err.message });
-      } else if (err.message.includes('must be')) {
-        res.status(400).json({ message: err.message });
-      } else {
-        console.error(err);
-        res.status(500).json({ message: 'Error updating category', error: err.message });
-      }
-    }
+    res.status(403).json({ message: "Category update is disabled for users." });
   }
 
   async delete(req, res) {
-    try {
-      await this.deleteCategory.execute(req.params.id, req.user.id);
-      res.json({
-        message: "Category deleted successfully",
-        categoryId: req.params.id,
-      });
-    } catch (err) {
-      if (err.message === 'Category not found') {
-        res.status(404).json({ message: err.message });
-      } else if (err.message === 'Unauthorized') {
-        res.status(403).json({ message: err.message });
-      } else {
-        console.error(err);
-        res.status(500).json({ message: 'Error deleting category', error: err.message });
-      }
-    }
+    res.status(403).json({ message: "Category deletion is disabled for users." });
   }
 }
 

@@ -1,5 +1,6 @@
 const TransactionRepository = require('../../domain/repositories/TransactionRepository');
 const TransactionModel = require('../database/models/TransactionModel');
+const mongoose = require('mongoose');
 const Transaction = require('../../domain/entities/Transaction');
 
 class MongooseTransactionRepository extends TransactionRepository {
@@ -57,20 +58,104 @@ class MongooseTransactionRepository extends TransactionRepository {
     return !!transaction;
   }
 
+  async getMonthlyStats(userId, year) {
+    const startOfYear = new Date(year, 0, 1);
+    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999);
+
+    const stats = await TransactionModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: { $gte: startOfYear, $lte: endOfYear }
+        }
+      },
+      {
+        $group: {
+          _id: { 
+            month: { $month: "$date" },
+            type: "$type"
+          },
+          total: { $sum: "$amount" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          type: "$_id.type",
+          total: 1
+        }
+      }
+    ]);
+
+    return stats;
+  }
+
+  async getCategoryStats(userId, startDate, endDate) {
+    const query = { 
+      userId: new mongoose.Types.ObjectId(userId),
+      type: 'EXPENSE' // Corrected to match enum 'EXPENSE'
+    };
+
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) query.date.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.date.$lte = end;
+      }
+    }
+
+    const stats = await TransactionModel.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: "$categoryId",
+          total: { $sum: "$amount" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: "categories", // Assuming the collection name is 'categories'
+          localField: "_id",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      { $unwind: "$category" },
+      {
+        $project: {
+          _id: 0,
+          categoryId: "$_id",
+          categoryName: "$category.name",
+          color: "$category.color",
+          icon: "$category.icon",
+          total: 1,
+          count: 1
+        }
+      },
+      { $sort: { total: -1 } }
+    ]);
+
+    return stats;
+  }
+
   _toEntity(mongoTransaction) {
+    const accountId = mongoTransaction.accountId;
+    const categoryId = mongoTransaction.categoryId;
+
     return new Transaction({
       id: mongoTransaction._id.toString(),
       userId: mongoTransaction.userId.toString(),
-      accountId: mongoTransaction.accountId ? mongoTransaction.accountId.toString() : null, // Handle optional accountId
-      categoryId: mongoTransaction.categoryId ? mongoTransaction.categoryId.toString() : null, // Handle populated or not
+      accountId: accountId ? (accountId._id ? accountId._id.toString() : accountId.toString()) : null,
+      categoryId: categoryId ? (categoryId._id ? categoryId._id.toString() : categoryId.toString()) : null,
       type: mongoTransaction.type,
       amount: mongoTransaction.amount,
       date: mongoTransaction.date,
       description: mongoTransaction.description,
-      // We might want to pass the full populated category/account objects if needed by the entity, 
-      // but the entity definition currently only has IDs or generic 'category' field.
-      // For now, let's stick to the basic entity structure.
-      category: mongoTransaction.categoryId, // This might be the object if populated
+      category: categoryId && categoryId._id ? categoryId : null, // Pass full object if populated
     });
   }
 }

@@ -4,6 +4,7 @@ const authMiddleware = require('../../../middleware/authMiddleware');
 
 // Dependencies
 const MongooseTransactionRepository = require('../../infrastructure/repositories/MongooseTransactionRepository');
+const MongooseAccountRepository = require('../../infrastructure/repositories/MongooseAccountRepository');
 const CreateTransaction = require('../../application/use_cases/transaction/CreateTransaction');
 const GetTransactions = require('../../application/use_cases/transaction/GetTransactions');
 const GetTransactionSummary = require('../../application/use_cases/transaction/GetTransactionSummary');
@@ -12,10 +13,12 @@ const TransactionController = require('../controllers/TransactionController');
 
 // Instantiate dependencies
 const transactionRepository = new MongooseTransactionRepository();
-const createTransaction = new CreateTransaction(transactionRepository);
+const accountRepository = new MongooseAccountRepository();
+
+const createTransaction = new CreateTransaction(transactionRepository, accountRepository);
 const getTransactions = new GetTransactions(transactionRepository);
 const getTransactionSummary = new GetTransactionSummary(transactionRepository);
-const deleteTransaction = new DeleteTransaction(transactionRepository);
+const deleteTransaction = new DeleteTransaction(transactionRepository, accountRepository);
 
 // Instantiate Controller
 const transactionController = new TransactionController(

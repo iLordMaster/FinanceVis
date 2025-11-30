@@ -32,6 +32,7 @@ const usersRoutes = require("./src/presentation/routes/userRoutes"); // New User
 const budgetRoutes = require("./src/presentation/routes/budgetRoutes"); // New Budget Routes
 const assetRoutes = require("./src/presentation/routes/assetRoutes"); // New Asset Routes
 const notificationRoutes = require("./src/presentation/routes/notificationRoutes"); // New Notification Routes
+const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes"); // New Dashboard Routes
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -41,6 +42,7 @@ app.use("/api/users", usersRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
 	res.send("Server running");

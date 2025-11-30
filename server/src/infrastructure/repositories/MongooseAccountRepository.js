@@ -36,6 +36,15 @@ class MongooseAccountRepository extends AccountRepository {
     return !!account;
   }
 
+  async updateBalance(id, amount) {
+    const account = await AccountModel.findByIdAndUpdate(
+      id,
+      { $inc: { balance: amount } },
+      { new: true }
+    );
+    return this._toEntity(account);
+  }
+
   _toEntity(mongoAccount) {
     return new Account({
       id: mongoAccount._id.toString(),

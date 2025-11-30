@@ -1,11 +1,11 @@
 class Transaction {
-  constructor({ id, userId, amount, date, description, category, type }) {
+  constructor({ id, userId, amount, date, description, categoryId, type }) {
     this.id = id;
     this.userId = userId;
     this.amount = amount;
     this.date = date || new Date();
     this.description = description;
-    this.category = category;
+    this.categoryId = categoryId;
     this.type = type; // 'INCOME' or 'EXPENSE'
   }
 }
