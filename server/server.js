@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./config/db");
+const connectDB = require("./src/infrastructure/database/mongoose"); // Updated path
 require("dotenv").config();
 const morgan = require("morgan");
 
@@ -24,18 +24,20 @@ app.use(express.json());
 connectDB();
 
 // Routes
-const authRoutes = require("./routes/auth");
-const transactionRoutes = require("./routes/transactions");
-const categoryRoutes = require("./routes/categories");
-const accountRoutes = require("./routes/accounts");
-const budgetRoutes = require("./routes/budgets");
-const assetRoutes = require("./routes/assets");
-const notificationRoutes = require("./routes/notifications");
+const authRoutes = require("./src/presentation/routes/authRoutes"); // New Auth Routes
+const transactionRoutes = require("./src/presentation/routes/transactionRoutes"); // New Transaction Routes
+const categoryRoutes = require("./src/presentation/routes/categoryRoutes"); // New Category Routes
+const accountRoutes = require("./src/presentation/routes/accountRoutes"); // New Account Routes
+const usersRoutes = require("./src/presentation/routes/userRoutes"); // New User Routes
+const budgetRoutes = require("./src/presentation/routes/budgetRoutes"); // New Budget Routes
+const assetRoutes = require("./src/presentation/routes/assetRoutes"); // New Asset Routes
+const notificationRoutes = require("./src/presentation/routes/notificationRoutes"); // New Notification Routes
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/accounts", accountRoutes);
+app.use("/api/users", usersRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/notifications", notificationRoutes);

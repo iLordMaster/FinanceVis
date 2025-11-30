@@ -11,24 +11,10 @@ import {
   FaApple,
 } from "react-icons/fa";
 import React from "react";
+import { useUser } from "../context/UserContext.jsx";
 
 function Navbar() {
-  // Helper to check token
-  function checkLoggedIn() {
-    const tokenStr = localStorage.getItem("token");
-    if (tokenStr) {
-      try {
-        const { token, expiry } = JSON.parse(tokenStr);
-        if (token && expiry && Date.now() < expiry) {
-          return true;
-        }
-      } catch {
-        // localStorage token malformed, ignoring
-      }
-    }
-    return false;
-  }
-  const [isLoggedIn, setIsLoggedIn] = useState(checkLoggedIn); // Only run this once on mount
+  const { isAuthenticated, logout: contextLogout } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const userMenuRef = useRef(null);
 
@@ -53,10 +39,9 @@ function Navbar() {
   }, [dropdownOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    window.location.reload();
+    contextLogout();
+    setDropdownOpen(false);
+    window.location.href = "/login";
   };
 
   return (
@@ -73,10 +58,10 @@ function Navbar() {
         <Link to="/" className="nav-link">
           Home
         </Link>
-        <Link to="/dashboard" className="nav-link">
+        <Link className="nav-link">
           Dashboard
         </Link>
-        {!isLoggedIn ? (
+        {!isAuthenticated ? (
           <Link to="/login" className="login-button">
             Log in
           </Link>
@@ -101,38 +86,15 @@ function Navbar() {
             >
               <div>
                 <AvatarIcon
-                  style={{ fontSize: "1.35em", color: "gray", border: "1px solid gray", padding: "4px", borderRadius: "50%" }}
+                  style={{ fontSize: "1.35em", color: "#8a8d98", border: "1px solid #2a2d3a", padding: "4px", borderRadius: "50%" }}
                   title="User profile"
                 />
               </div>
-              <FaChevronDown style={{ fontSize: "0.85em", color: "black" }} />
+              <FaChevronDown style={{ fontSize: "0.85em", color: "#8a8d98" }} />
             </button>
             {dropdownOpen && (
-              <div
-                className="user-dropdown"
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  top: "2.2em",
-                  background: "#fff",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
-                  borderRadius: "8px",
-                  minWidth: "140px",
-                  zIndex: 22,
-                }}
-              >
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "0.75em 1em",
-                    cursor: "pointer",
-                    color: "red",
-                  }}
-                >
+              <div className="user-dropdown">
+                <button onClick={handleLogout}>
                   Logout
                 </button>
               </div>

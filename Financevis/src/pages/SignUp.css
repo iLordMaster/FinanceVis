@@ -4,17 +4,19 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+  background-color: #0f111a;
   min-height: calc(100vh - 200px);
+  font-family: 'Inter', sans-serif;
 }
 
 .signup-wrapper {
   width: 100%;
   max-width: 450px;
-  background: #ffffff;
+  background: #161822;
   border-radius: 16px;
   padding: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid #2a2d3a;
 }
 
 .signup-header {
@@ -23,15 +25,19 @@
 }
 
 .signup-title {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #ffffff;
   margin: 0 0 0.75rem 0;
+  background: linear-gradient(135deg, #646cff 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .signup-subtitle {
-  color: #666;
+  color: #8a8d98;
   font-size: 1rem;
   margin: 0;
 }
@@ -51,7 +57,7 @@
 .form-label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 0.25rem;
 }
 
@@ -64,28 +70,34 @@
 .input-icon {
   position: absolute;
   left: 1rem;
-  color: #666;
+  color: #8a8d98;
   font-size: 1rem;
   z-index: 1;
+  transition: color 0.3s ease;
 }
 
 .form-input {
   width: 100%;
   padding: 0.875rem 1rem 0.875rem 2.75rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #2a2d3a;
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
-  color: #1a1a1a;
-  background-color: #ffffff;
+  color: #ffffff;
+  background-color: #1e2130;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.15);
+}
+
+.form-input:focus ~ .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: #646cff;
 }
 
 .form-input.error {
@@ -93,11 +105,11 @@
 }
 
 .form-input.error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 .form-input::placeholder {
-  color: #999;
+  color: #555;
 }
 
 .password-toggle {
@@ -105,7 +117,7 @@
   right: 1rem;
   background: none;
   border: none;
-  color: #666;
+  color: #8a8d98;
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
@@ -115,7 +127,7 @@
 }
 
 .password-toggle:hover {
-  color: #22c55e;
+  color: #646cff;
 }
 
 .error-message {
@@ -134,37 +146,42 @@
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
-  color: #666;
+  color: #8a8d98;
   cursor: pointer;
   user-select: none;
   line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.checkbox-label:hover {
+  color: #ffffff;
 }
 
 .checkbox-input {
   width: 1.1rem;
   height: 1.1rem;
   cursor: pointer;
-  accent-color: #22c55e;
+  accent-color: #646cff;
   margin-top: 0.2rem;
   flex-shrink: 0;
 }
 
 .terms-link {
-  color: #22c55e;
+  color: #646cff;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .terms-link:hover {
-  color: #16a34a;
+  color: #8b5cf6;
   text-decoration: underline;
 }
 
 .signup-submit-btn {
   width: 100%;
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, #646cff, #8b5cf6);
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -173,40 +190,46 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 0.5rem;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 16px rgba(100, 108, 255, 0.3);
 }
 
 .signup-submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 6px 20px rgba(100, 108, 255, 0.4);
 }
 
 .signup-submit-btn:active {
   transform: translateY(0);
 }
 
+.signup-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .login-link {
   text-align: center;
   margin-top: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #2a2d3a;
 }
 
 .login-link p {
-  color: #666;
+  color: #8a8d98;
   font-size: 0.95rem;
   margin: 0;
 }
 
 .login-link-text {
-  color: #22c55e;
+  color: #646cff;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 .login-link-text:hover {
-  color: #16a34a;
+  color: #8b5cf6;
   text-decoration: underline;
 }
 

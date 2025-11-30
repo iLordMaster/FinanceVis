@@ -4,10 +4,11 @@ import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./SignUp.css";
-import { AuthApi } from "../api/authApi";
+import { useUser } from "../context/UserContext.jsx";
 
 function SignUp() {
   const navigate = useNavigate();
+  const { register } = useUser();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -68,33 +69,22 @@ function SignUp() {
       return;
     }
 
-    // Handle signup API call
+    // Handle signup using UserContext
     setLoading(true);
     setSubmitError("");
 
     try {
-      const response = await AuthApi.register({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-      });
+      const result = await register(
+        formData.name.trim(),
+        formData.email.trim(),
+        formData.password
+      );
 
-
-
-      // Store token with expiry (default 24 hours for new registrations)
-      if (response.token) {
-        const now = Date.now();
-        const expiry = now + 24 * 60 * 60 * 1000; // 24 hours
-        const tokenObj = {
-          token: response.token,
-          expiry,
-        };
-        localStorage.setItem("token", JSON.stringify(tokenObj));
-        localStorage.setItem("user", JSON.stringify(response.user));
+      if (result.success) {
+        navigate("/dashboard");
+      } else {
+        setSubmitError(result.message || "Registration failed");
       }
-
-      // Navigate to home page on success
-      navigate("/");
     } catch (error) {
       setSubmitError(error.message || "An error occurred during registration");
     } finally {

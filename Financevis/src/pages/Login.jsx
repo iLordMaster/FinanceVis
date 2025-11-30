@@ -4,10 +4,11 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "./Login.css";
-import { AuthApi } from "../api/authApi";
+import { useUser } from "../context/UserContext.jsx";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -54,37 +55,21 @@ function Login() {
       return;
     }
 
-    // Handle login API call
+    // Handle login using UserContext
     setLoading(true);
     setSubmitError("");
 
     try {
-      const response = await AuthApi.login({
-        email: formData.email,
-        password: formData.password,
-      });
+      const result = await login(
+        formData.email,
+        formData.password,
+        formData.rememberMe
+      );
 
-      console.log(response)
-
-
-
-      // Store token with expiry
-      if (response.token) {
-        const now = Date.now();
-        const expiry = formData.rememberMe
-          ? now + 7 * 24 * 60 * 60 * 1000 // 1 week
-          : now + 24 * 60 * 60 * 1000; // 24 hours
-        const tokenObj = {
-          token: response.token,
-          expiry,
-        };
-        localStorage.setItem("token", JSON.stringify(tokenObj));
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-
-      // Navigate to home page on success
-      if (response.user) {
-        navigate("/");
+      if (result.success) {
+        navigate("/dashboard");
+      } else {
+        setSubmitError(result.message || "Login failed");
       }
     } catch (error) {
       setSubmitError(error.message || "An error occurred during login");

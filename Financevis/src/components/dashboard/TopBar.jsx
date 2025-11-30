@@ -1,11 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import { useUser } from '../../context/UserContext.jsx';
 
 const TopBar = ({ isActive }) => {
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    const { user } = useUser();
+
+    console.log(user);
+
+    const DEFAULT_AVATAR = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+    const USER_PFP = user?.profilePicture;
 
     const handleHomeClick = () => {
         navigate('/');
@@ -62,11 +70,11 @@ const TopBar = ({ isActive }) => {
 
       <div className="user-profile" ref={dropdownRef}>
         <div className="user-info">
-          <span className="user-name">Simon K. Jimmy</span>
+          <span className="user-name">{user.name}</span>
           <span className="user-role">Mortgage consultant</span>
         </div>
         <div className="avatar" onClick={toggleDropdown} style={{ cursor: 'pointer' }}>
-          <img src="https://i.pravatar.cc/150?img=11" alt="User Avatar" />
+          <img src={USER_PFP ? USER_PFP : DEFAULT_AVATAR} alt="User Avatar" />
         </div>
         
         {isDropdownOpen && (

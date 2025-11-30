@@ -3,13 +3,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 2rem;
-  background-color: #ffff;
+  background-color: #161822;
+  border-bottom: 1px solid #2a2d3a;
+  font-family: 'Inter', sans-serif;
 }
 
 .navbar-title {
   font-size: 2rem;
-  font-weight: 600;
-  color: rgba(101, 117, 139, 1);
+  font-weight: 700;
+  background: linear-gradient(135deg, #646cff 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .navbar-left {
@@ -26,6 +31,7 @@
   height: 60px;
   width: auto;
   object-fit: contain;
+  filter: brightness(1.2);
 }
 
 .navbar-right {
@@ -35,59 +41,79 @@
 }
 
 .nav-link {
-  color: rgba(101, 117, 139, 1);
+  color: #8a8d98;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.25s;
+  transition: color 0.3s ease;
+  font-size: 0.95rem;
 }
 
 .nav-link:hover {
-  color: rgba(39, 176, 125, 1);
+  color: #ffffff;
 }
 
 .login-button {
-  background-color: rgba(39, 176, 125, 1);
+  background: linear-gradient(135deg, #646cff, #8b5cf6);
   color: white;
   border: none;
   padding: 0.6em 1.5em;
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.25s;
+  transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
   font-family: inherit;
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
 }
 
 .login-button:hover {
-  background-color: rgb(24, 143, 99);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
 }
 
 .user-menu-btn:focus {
   outline: none;
 }
 
-@media (prefers-color-scheme: light) {
-  .navbar {
-    background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
-  }
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 2.2em;
+  background: #161822;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  min-width: 140px;
+  z-index: 22;
+  border: 1px solid #2a2d3a;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
 
-  .nav-link {
-    color: #213547;
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .nav-link:hover {
-    color: #747bff;
-  }
+.user-dropdown button {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.75em 1em;
+  cursor: pointer;
+  color: #f97316;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
 
-  .login-button {
-    background-color: #646cff;
-  }
-
-  .login-button:hover {
-    background-color: #535bf2;
-  }
+.user-dropdown button:hover {
+  background-color: rgba(249, 115, 22, 0.1);
 }
 
 @media (max-width: 1024px) {
