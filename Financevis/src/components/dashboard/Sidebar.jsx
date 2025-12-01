@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const Sidebar = () => {
+const Sidebar = ({ activeMonth, onMonthChange }) => {
   const months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
-  const [activeMonth, setActiveMonth] = useState('Jun');
 
   return (
     <div className="sidebar">
@@ -14,7 +13,7 @@ const Sidebar = () => {
           <div 
             key={month} 
             className={`month-item ${activeMonth === month ? 'active' : ''}`}
-            onClick={() => setActiveMonth(month)}
+            onClick={() => onMonthChange(month)}
           >
             {month}
           </div>

@@ -13,36 +13,37 @@ import BarChart from '../components/dashboard/BarChart';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [activeMonth, setActiveMonth] = useState('Jun');
   
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const dataJson = await UserApi.request('/api/dashboard/monthly-stats');
-          
-          if (Array.isArray(dataJson)) {
-            setData(dataJson);
-          } else {
-            console.error('Expected array from monthly-stats but got:', dataJson);
-            setData([]);
-          }
-        } catch (error) {
-          console.error('Error fetching monthly stats:', error);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataJson = await UserApi.request('/api/dashboard/monthly-stats');
+        
+        if (Array.isArray(dataJson)) {
+          setData(dataJson);
+        } else {
+          console.error('Expected array from monthly-stats but got:', dataJson);
           setData([]);
-        } finally {
-          setLoading(false);
         }
-      };
-  
-      fetchData();
-    }, []);
+      } catch (error) {
+        console.error('Error fetching monthly stats:', error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const maxIncome = data.length > 0 ? Math.max(...data.map(item => item.income)) : 0;
-    const maxExpenses = data.length > 0 ? Math.max(...data.map(item => item.expenses)) : 0;
+    fetchData();
+  }, []);
+
+  const maxIncome = data.length > 0 ? Math.max(...data.map(item => item.income)) : 0;
+  const maxExpenses = data.length > 0 ? Math.max(...data.map(item => item.expenses)) : 0;
 
   return (
     <div className="dashboard-container">
-      <Sidebar />
+      <Sidebar activeMonth={activeMonth} onMonthChange={setActiveMonth} />
       <div className="main-content">
         <TopBar isActive={true} balance="$14,822" />
         
@@ -55,14 +56,14 @@ const Dashboard = () => {
           {/* Spendings */}
           <DashboardCard title="Spendings" className="card-spendings">
             <div className="card-title">$9,228</div>
-            <LineChart />
+            <LineChart selectedMonth={activeMonth} type="EXPENSE" />
           </DashboardCard>
 
 
           {/* Income */}
           <DashboardCard title="Income" className="card-income">
             <div className="card-title">$24,050</div>
-            <LineChart />
+            <LineChart selectedMonth={activeMonth} type="INCOME" />
           </DashboardCard>
 
           {/* Spending Categories */}

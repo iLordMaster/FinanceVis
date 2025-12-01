@@ -19,13 +19,27 @@ export default function DualLineChart() {
     const fetchData = async () => {
       try {
         // Use UserApi.request to handle token and auto-logout
-        const dataJson = await UserApi.request('/api/dashboard/monthly-stats');
+        const response = await UserApi.request('/api/dashboard/monthly-stats');
+        
+        console.log('Monthly stats API response:', response);
         
         // Ensure data is an array before setting it
-        if (Array.isArray(dataJson)) {
-          setData(dataJson);
+        if (Array.isArray(response)) {
+          // Validate that each item has the expected structure
+          const validData = response.every(item => 
+            item.hasOwnProperty('month') && 
+            item.hasOwnProperty('income') && 
+            item.hasOwnProperty('expenses')
+          );
+          
+          if (validData) {
+            setData(response);
+          } else {
+            console.error('Data items missing required fields (month, income, expenses):', response);
+            setData([]);
+          }
         } else {
-          console.error('Expected array from monthly-stats but got:', dataJson);
+          console.error('Expected array from monthly-stats but got:', typeof response, response);
           setData([]);
         }
       } catch (error) {
@@ -38,6 +52,8 @@ export default function DualLineChart() {
 
     fetchData();
   }, []);
+
+  console.log('DualLineChart data:', data);
 
   if (loading) {
     return <div style={{ width: "100%", height: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>Loading...</div>;
@@ -63,11 +79,13 @@ export default function DualLineChart() {
           <XAxis dataKey="month" stroke="#9ca3af" />
           <YAxis stroke="#9ca3af" />
           <Tooltip
+            cursor={{ fill: "rgba(255, 255, 255, 0.13)" }}
             contentStyle={{
-                backgroundColor: "#1e293b",
-                border: "1px solid #334155",
+                backgroundColor: "rgba(15, 23, 42, 0.6)",
+                backdropFilter: "blur(6px)",
+                border: "1px solid rgba(51, 65, 85, 0.4)",
                 borderRadius: "8px",
-                color: "#f1f5f9",
+                color: "#fff",
             }}
             labelStyle={{ color: "#94a3b8" }}
             />
