@@ -202,10 +202,10 @@ class MongooseTransactionRepository extends TransactionRepository {
     return stats;
   }
 
-  async getCategoryStats(userId, startDate, endDate) {
+  async getCategoryStats(userId, startDate, endDate, type = 'EXPENSE') {
     const query = { 
       userId: new mongoose.Types.ObjectId(userId),
-      type: 'EXPENSE' // Corrected to match enum 'EXPENSE'
+      type: type // Support both INCOME and EXPENSE
     };
 
     if (startDate || endDate) {

@@ -26,7 +26,11 @@ class DashboardController {
 
   async getTopCategories(req, res) {
     try {
-      const categories = await this.dashboardService.getTopCategories(req.user.id);
+      const type = req.query.type || 'EXPENSE'; // Default to EXPENSE for backward compatibility
+      const startDate = req.query.startDate ? new Date(req.query.startDate) : null;
+      const endDate = req.query.endDate ? new Date(req.query.endDate) : null;
+      
+      const categories = await this.dashboardService.getTopCategories(req.user.id, type, startDate, endDate);
       res.json(categories);
     } catch (err) {
       console.error(err);

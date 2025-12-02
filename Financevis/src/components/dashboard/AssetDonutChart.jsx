@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -5,17 +6,58 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-const data = [
-  { name: "Gold", value: 15700 },
-  { name: "Stock", value: 22500 },
-  { name: "Warehouse", value: 120000 },
-  { name: "Land", value: 135000 },
-];
-
-const COLORS = ["#facc15", "#22d3ee", "#a855f7", "#ef4444"];
+import { UserApi } from "../../api/userApi";
 
 export default function DonutChart() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await UserApi.request('/api/dashboard/asset-summary');
+        
+        console.log('Asset summary API response:', response);
+        
+        // Transform the API response to match the chart format
+        if (Array.isArray(response)) {
+          const chartData = response.map(asset => ({
+            name: asset.name,
+            value: asset.value,
+            color: asset.color
+          }));
+          setData(chartData);
+        } else {
+          console.error('Expected array from asset-summary but got:', response);
+          setData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching asset summary:', error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ width: "100%", height: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        Loading...
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div style={{ width: "100%", height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+        No asset data available
+      </div>
+    );
+  }
+
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>
@@ -34,6 +76,7 @@ export default function DonutChart() {
             itemStyle={{
                 color: "#fff"        
             }}
+            formatter={(value) => `$${value.toLocaleString()}`}
           />
 
           <Pie
@@ -47,7 +90,7 @@ export default function DonutChart() {
             paddingAngle={2}
           >
             {data.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Cell key={index} fill={entry.color} />
             ))}
           </Pie>
         </PieChart>

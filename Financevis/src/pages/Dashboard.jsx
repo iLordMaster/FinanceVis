@@ -4,21 +4,26 @@ import TopBar from '../components/dashboard/TopBar';
 import DashboardCard from '../components/dashboard/DashboardCard';
 import ChartPlaceholder from '../components/dashboard/ChartPlaceholder';
 import './dashboard.css';
-import { FaHome, FaUser, FaCar, FaDog } from 'react-icons/fa';
+import { FaDog } from 'react-icons/fa';
 import DualLineChart from '../components/dashboard/DualLineChart';
 import { UserApi } from '../api/userApi';
 import AssetDonutChart from '../components/dashboard/AssetDonutChart';
+import AssetLegend from '../components/dashboard/AssetLegend';
 import LineChart from '../components/dashboard/LineChart';
 import BarChart from '../components/dashboard/BarChart';
+import SpendingList from '../components/dashboard/SpendingList';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeMonth, setActiveMonth] = useState('Jun');
+  const [accounts, setAccounts] = useState([]);
+  const [assets, setAssets] = useState([]);
   
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch monthly stats
         const dataJson = await UserApi.request('/api/dashboard/monthly-stats');
         
         if (Array.isArray(dataJson)) {
@@ -27,8 +32,28 @@ const Dashboard = () => {
           console.error('Expected array from monthly-stats but got:', dataJson);
           setData([]);
         }
+
+        // Fetch accounts
+        const accountsData = await UserApi.request('/api/dashboard/account-summary');
+        console.log('Accounts API response:', accountsData);
+        if (Array.isArray(accountsData)) {
+          setAccounts(accountsData);
+          console.log('Total accounts:', accountsData.length);
+        } else {
+          console.error('Expected array from account-summary but got:', accountsData);
+        }
+
+        // Fetch assets
+        const assetsData = await UserApi.request('/api/dashboard/asset-summary');
+        console.log('Assets API response:', assetsData);
+        if (Array.isArray(assetsData)) {
+          setAssets(assetsData);
+          console.log('Total assets:', assetsData.length);
+        } else {
+          console.error('Expected array from asset-summary but got:', assetsData);
+        }
       } catch (error) {
-        console.error('Error fetching monthly stats:', error);
+        console.error('Error fetching dashboard data:', error);
         setData([]);
       } finally {
         setLoading(false);
@@ -40,57 +65,45 @@ const Dashboard = () => {
 
   const maxIncome = data.length > 0 ? Math.max(...data.map(item => item.income)) : 0;
   const maxExpenses = data.length > 0 ? Math.max(...data.map(item => item.expenses)) : 0;
+  
+  // Calculate total account balance (sum of all accounts)
+  const totalAccountBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
+  console.log('Total Account Balance:', totalAccountBalance, 'from', accounts.length, 'accounts');
+  
+  // Calculate total asset value
+  const totalAssetValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+  console.log('Total Asset Value:', totalAssetValue, 'from', assets.length, 'assets');
+  
+  // Calculate total net worth = account balance + total asset values
+  const netWorth = totalAccountBalance + totalAssetValue;
+  console.log('Net Worth:', netWorth);
 
   return (
     <div className="dashboard-container">
       <Sidebar activeMonth={activeMonth} onMonthChange={setActiveMonth} />
       <div className="main-content">
-        <TopBar isActive={true} balance="$14,822" />
+        <TopBar isActive={true} balance={`$${totalAccountBalance.toLocaleString()}`} />
         
         <div className="dashboard-grid">
           {/* Total Net Worth */}
           <DashboardCard title="Total Net Worth" className="card-net-worth">
-            <div className="net-worth-amount">$278,378</div>
+            <div className="net-worth-amount">${netWorth.toLocaleString()}</div>
           </DashboardCard>
 
           {/* Spendings */}
           <DashboardCard title="Spendings" className="card-spendings">
-            <div className="card-title">$9,228</div>
             <LineChart selectedMonth={activeMonth} type="EXPENSE" />
           </DashboardCard>
 
 
           {/* Income */}
           <DashboardCard title="Income" className="card-income">
-            <div className="card-title">$24,050</div>
             <LineChart selectedMonth={activeMonth} type="INCOME" />
           </DashboardCard>
 
           {/* Spending Categories */}
           <DashboardCard title="Spendings" className="card-categories">
-            <div className="category-list">
-              <div className="category-item">
-                <div className="cat-icon" style={{ backgroundColor: '#4f46e5' }}><FaHome /></div>
-                <div className="cat-details">
-                  <span className="cat-name">Housing</span>
-                  <span className="cat-amount">$3,452</span>
-                </div>
-              </div>
-              <div className="category-item">
-                <div className="cat-icon" style={{ backgroundColor: '#db2777' }}><FaUser /></div>
-                <div className="cat-details">
-                  <span className="cat-name">Personal</span>
-                  <span className="cat-amount">$2,200</span>
-                </div>
-              </div>
-              <div className="category-item">
-                <div className="cat-icon" style={{ backgroundColor: '#f97316' }}><FaCar /></div>
-                <div className="cat-details">
-                  <span className="cat-name">Transportation</span>
-                  <span className="cat-amount">$2,190</span>
-                </div>
-              </div>
-            </div>
+            <SpendingList selectedMonth={activeMonth} />
           </DashboardCard>
 
           {/* Income Goal */}
@@ -116,22 +129,13 @@ const Dashboard = () => {
 
           {/* Income Source */}
           <DashboardCard title="Income Source" className="card-income-source">
-            <BarChart />
+            <BarChart selectedMonth={activeMonth} />
           </DashboardCard>
 
           {/* Assets */}
           <DashboardCard title="Assets" className="card-assets">
             <AssetDonutChart />
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '0.8rem' }}>
-              <div>
-                <div>Gold</div>
-                <div style={{ fontWeight: 'bold' }}>$15,700</div>
-              </div>
-              <div>
-                <div>Stock</div>
-                <div style={{ fontWeight: 'bold' }}>$22,500</div>
-              </div>
-            </div>
+            <AssetLegend />
           </DashboardCard>
 
           {/* Income & Expenses */}

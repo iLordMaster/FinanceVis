@@ -90,7 +90,7 @@ export default function IncomeChart({ selectedMonth, type = 'INCOME' }) {
     for (let i = 1; i <= daysInMonth; i++) {
       dailyData.push({
         day: i,
-        label: `${i}`, // Display just the day number
+        label: `Day ${i}`, // Display just the day number
         amount: 0
       });
     }
@@ -114,6 +114,7 @@ export default function IncomeChart({ selectedMonth, type = 'INCOME' }) {
   if (loading) {
     return <div style={{ width: "100%", height: 250, display: "flex", alignItems: "center", justifyContent: "center" }}>Loading...</div>;
   }
+
 
   return (
     <div style={{ width: "100%", height: 250 }}>

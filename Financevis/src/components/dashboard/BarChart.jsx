@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -7,14 +8,85 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { UserApi } from "../../api/userApi";
 
-export default function IncomeSourceColumnChart() {
-  const data = [
-    { name: "E-commerce", value: 2100, color: "#ffffff" },
-    { name: "Google Adsense", value: 950, color: "#ef4444" },
-    { name: "My Shop", value: 8000, color: "#ffffff" },
-    { name: "Salary", value: 13000, color: "#10b981" },
-  ];
+export default function IncomeSourceColumnChart({ selectedMonth }) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // Determine the target month index
+        const selectedMonthIndex = selectedMonth ? monthNames.indexOf(selectedMonth) : currentDate.getMonth();
+        
+        if (selectedMonthIndex === -1) {
+          console.error('Invalid month name:', selectedMonth);
+          setData([]);
+          setLoading(false);
+          return;
+        }
+
+        // Handle year transition: If selected month is in the future relative to current month, assume previous year
+        if (selectedMonthIndex > currentDate.getMonth()) {
+          currentYear -= 1;
+        }
+
+        // Calculate startDate (1st of month) and endDate (last day of month)
+        const startDate = new Date(currentYear, selectedMonthIndex, 1);
+        const endDate = new Date(currentYear, selectedMonthIndex + 1, 0, 23, 59, 59, 999);
+
+        // Format dates as ISO strings for the API
+        const startDateStr = startDate.toISOString();
+        const endDateStr = endDate.toISOString();
+
+        const response = await UserApi.request(`/api/dashboard/top-categories?type=INCOME&startDate=${startDateStr}&endDate=${endDateStr}`);
+        
+        console.log('Income categories API response:', response);
+        
+        // Transform the API response to match the chart format
+        if (Array.isArray(response)) {
+          const chartData = response.map(category => ({
+            name: category.categoryName,
+            value: category.total,
+            color: category.color || "#ffffff"
+          }));
+          setData(chartData);
+        } else {
+          console.error('Expected array from top-categories but got:', response);
+          setData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching income categories:', error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedMonth]);
+
+  if (loading) {
+    return (
+      <div style={{ width: "100%", height: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        Loading...
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div style={{ width: "100%", height: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+        No income data available
+      </div>
+    );
+  }
+
   return (
     <div style={{ width: "100%", height: 200 }}>
       <ResponsiveContainer>

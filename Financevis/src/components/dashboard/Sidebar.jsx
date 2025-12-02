@@ -8,6 +8,7 @@ const Sidebar = ({ activeMonth, onMonthChange }) => {
 
   return (
     <div className="sidebar">
+      <div className="logo">FV</div>
       <div className="month-list">
         {months.map((month) => (
           <div 

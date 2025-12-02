@@ -43,12 +43,15 @@ class DashboardService {
     return this.transactionRepository.getMonthlyStats(userId, year);
   }
 
-  async getTopCategories(userId) {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  async getTopCategories(userId, type = 'EXPENSE', startDate = null, endDate = null) {
+    // If no date range provided, default to current month
+    if (!startDate || !endDate) {
+      const now = new Date();
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    }
     
-    return this.transactionRepository.getCategoryStats(userId, startOfMonth, endOfMonth);
+    return this.transactionRepository.getCategoryStats(userId, startDate, endDate, type);
   }
 
   async getRecentActivity(userId) {

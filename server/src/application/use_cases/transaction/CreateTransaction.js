@@ -17,6 +17,12 @@ class CreateTransaction {
       throw new Error('type must be either INCOME or EXPENSE');
     }
 
+    // Check if user has at least one account
+    const userAccounts = await this.accountRepository.findByUserId(userId);
+    if (!userAccounts || userAccounts.length === 0) {
+      throw new Error('You must create at least one account before adding transactions');
+    }
+
     const transaction = new Transaction({
       userId,
       accountId,
