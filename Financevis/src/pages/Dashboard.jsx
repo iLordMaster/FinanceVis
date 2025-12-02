@@ -12,6 +12,8 @@ import AssetLegend from '../components/dashboard/AssetLegend';
 import LineChart from '../components/dashboard/LineChart';
 import BarChart from '../components/dashboard/BarChart';
 import SpendingList from '../components/dashboard/SpendingList';
+import EditIncomeGoalModal from '../components/EditIncomeGoalModal';
+import { DashboardService } from '../services/DashboardService';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
@@ -19,6 +21,9 @@ const Dashboard = () => {
   const [activeMonth, setActiveMonth] = useState('Jun');
   const [accounts, setAccounts] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [incomeGoal, setIncomeGoal] = useState(0);
+  const [ytdIncome, setYtdIncome] = useState(0);
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +57,25 @@ const Dashboard = () => {
         } else {
           console.error('Expected array from asset-summary but got:', assetsData);
         }
+
+        // Fetch user profile for income goal
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const userObj = JSON.parse(userStr);
+          const userProfile = await UserApi.getUser(userObj.id);
+          setIncomeGoal(userProfile.incomeGoal || 0);
+        }
+
+        // Fetch YTD Income
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
+        const endOfToday = new Date().toISOString();
+        
+        const ytdStats = await DashboardService.getMonthlyIncomeVsExpenses({
+          startDate: startOfYear,
+          endDate: endOfToday
+        });
+        setYtdIncome(ytdStats.income || 0);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setData([]);
@@ -108,17 +132,37 @@ const Dashboard = () => {
 
           {/* Income Goal */}
           <DashboardCard className="card-income-goal">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-              <div>
-                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#646cff' }}>61%</div>
-                <div className="card-title">Income Goal</div>
+            <div 
+              style={{ cursor: 'pointer' }} 
+              onClick={() => setIsGoalModalOpen(true)}
+              title="Click to edit goal"
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                <div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#646cff' }}>
+                    {incomeGoal > 0 ? Math.min(Math.round((ytdIncome / incomeGoal) * 100), 100) : 0}%
+                  </div>
+                  <div className="card-title">Income Goal (YTD)</div>
+                </div>
+                <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>
+                  ${ytdIncome.toLocaleString()} / {incomeGoal.toLocaleString()}
+                </div>
               </div>
-              <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>$24,050 / 39,276</div>
-            </div>
-            <div className="progress-container">
-              <div className="progress-bar"></div>
+              <div className="progress-container">
+                <div 
+                  className="progress-bar" 
+                  style={{ width: `${incomeGoal > 0 ? Math.min((ytdIncome / incomeGoal) * 100, 100) : 0}%` }}
+                ></div>
+              </div>
             </div>
           </DashboardCard>
+
+          <EditIncomeGoalModal
+            isOpen={isGoalModalOpen}
+            onClose={() => setIsGoalModalOpen(false)}
+            currentGoal={incomeGoal}
+            onSave={(newGoal) => setIncomeGoal(newGoal)}
+          />
 
           {/* Notifications */}
           <DashboardCard title="Notification" className="card-notifications">

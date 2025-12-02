@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   passwordHash: { type: String, required: true },
   profilePicture: { type: String, default: '' },
+  incomeGoal: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 

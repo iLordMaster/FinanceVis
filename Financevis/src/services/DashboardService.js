@@ -1,8 +1,9 @@
-import { TransactionApi } from './transactionApi';
-import { CategoryApi } from './categoryApi';
-import { AccountApi } from './accountApi';
-import { BudgetApi } from './budgetApi';
-import { AssetApi } from './assetApi';
+import { TransactionApi } from '../api/transactionApi';
+import { CategoryApi } from '../api/categoryApi';
+import { AccountApi } from '../api/accountApi';
+import { BudgetApi } from '../api/budgetApi';
+import { AssetApi } from '../api/assetApi';
+import { UserApi } from '../api/userApi';
 
 /**
  * DashboardService - Aggregates data from multiple APIs for dashboard display

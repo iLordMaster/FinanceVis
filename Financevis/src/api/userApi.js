@@ -51,4 +51,12 @@ export class UserApi {
       method: "GET",
     });
   }
+
+  // Update user profile
+  static async updateProfile(id, data) {
+    return this.request(`${this.api_url}/${id}/profile`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
 }

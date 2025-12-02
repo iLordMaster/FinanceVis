@@ -1,10 +1,11 @@
 class User {
-  constructor({ id, name, email, passwordHash, profilePicture, createdAt }) {
+  constructor({ id, name, email, passwordHash, profilePicture, incomeGoal, createdAt }) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.passwordHash = passwordHash;
     this.profilePicture = profilePicture;
+    this.incomeGoal = incomeGoal || 0;
     this.createdAt = createdAt || new Date();
   }
 }

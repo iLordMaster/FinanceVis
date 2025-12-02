@@ -39,6 +39,7 @@ class MongooseUserRepository extends UserRepository {
       email: mongoUser.email,
       passwordHash: mongoUser.passwordHash,
       profilePicture: mongoUser.profilePicture,
+      incomeGoal: mongoUser.incomeGoal,
       createdAt: mongoUser.createdAt,
     });
   }

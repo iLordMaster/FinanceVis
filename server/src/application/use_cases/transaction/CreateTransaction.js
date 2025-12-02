@@ -9,8 +9,8 @@ class CreateTransaction {
   async execute(transactionData) {
     const { userId, accountId, categoryId, type, amount, date, description } = transactionData;
 
-    if (!categoryId || !type || !amount) {
-      throw new Error('categoryId, type, amount are required');
+    if (!accountId || !categoryId || !type || !amount) {
+      throw new Error('accountId, categoryId, type, and amount are required');
     }
 
     if (!['INCOME', 'EXPENSE'].includes(type)) {
@@ -21,6 +21,16 @@ class CreateTransaction {
     const userAccounts = await this.accountRepository.findByUserId(userId);
     if (!userAccounts || userAccounts.length === 0) {
       throw new Error('You must create at least one account before adding transactions');
+    }
+
+    // Verify the selected account belongs to the user
+    const accountBelongsToUser = userAccounts.some(acc => {
+      const accId = (acc._id || acc.id).toString();
+      const selectedAccId = accountId.toString();
+      return accId === selectedAccId;
+    });
+    if (!accountBelongsToUser) {
+      throw new Error('The selected account does not belong to you');
     }
 
     const transaction = new Transaction({
@@ -36,10 +46,8 @@ class CreateTransaction {
     const createdTransaction = await this.transactionRepository.create(transaction);
 
     // Update account balance
-    if (accountId) {
-      const balanceChange = type === 'INCOME' ? amount : -amount;
-      await this.accountRepository.updateBalance(accountId, balanceChange);
-    }
+    const balanceChange = type === 'INCOME' ? amount : -amount;
+    await this.accountRepository.updateBalance(accountId, balanceChange);
 
     return createdTransaction;
   }

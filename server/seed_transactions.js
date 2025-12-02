@@ -59,6 +59,43 @@ async function getCategories(token) {
   }
 }
 
+async function getOrCreateAccounts(token) {
+  try {
+    console.log('Fetching accounts...');
+    const response = await axios.get(`${API_BASE_URL}/api/accounts`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    let accounts = response.data.accounts || response.data;
+    
+    if (accounts.length === 0) {
+      console.log('No accounts found. Creating default accounts...');
+      
+      // Create default accounts
+      const defaultAccounts = [
+        { name: 'Main Bank Account', type: 'BANK', balance: 5000 },
+        { name: 'Cash Wallet', type: 'CASH', balance: 500 },
+        { name: 'Savings Account', type: 'SAVINGS', balance: 10000 }
+      ];
+      
+      accounts = [];
+      for (const accountData of defaultAccounts) {
+        const createResponse = await axios.post(`${API_BASE_URL}/api/accounts`, accountData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        accounts.push(createResponse.data.account || createResponse.data);
+        console.log(`  Created account: ${accountData.name}`);
+      }
+    }
+    
+    console.log(`Using ${accounts.length} accounts for transactions`);
+    return accounts;
+  } catch (error) {
+    console.error('Failed to fetch/create accounts:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
 async function createTransaction(token, transactionData) {
   try {
     await axios.post(`${API_BASE_URL}/api/transactions`, transactionData, {
@@ -82,6 +119,14 @@ async function seedTransactions() {
       return;
     }
     
+    // Get or create accounts
+    const accounts = await getOrCreateAccounts(token);
+    
+    if (accounts.length === 0) {
+      console.error('No accounts available. Cannot create transactions.');
+      return;
+    }
+    
     console.log(`\nSeeding transactions for the year 2025...`);
     
     const year = 2025;
@@ -96,12 +141,13 @@ async function seedTransactions() {
       const incomeCount = randomAmount(2, 4);
       for (let i = 0; i < incomeCount; i++) {
         const category = income[randomAmount(0, income.length - 1)];
-        console.log(category);
+        const account = accounts[randomAmount(0, accounts.length - 1)];
         const amount = category.name === 'Salary' 
           ? randomAmount(3000, 5000) 
           : randomAmount(100, 1500);
         
         await createTransaction(token, {
+          accountId: account.id,
           categoryId: category.id,
           type: 'INCOME',
           amount,
@@ -116,11 +162,13 @@ async function seedTransactions() {
       const expenseCount = randomAmount(5, 10);
       for (let i = 0; i < expenseCount; i++) {
         const category = expense[randomAmount(0, expense.length - 1)];
+        const account = accounts[randomAmount(0, accounts.length - 1)];
         const amount = category.name === 'Housing' 
           ? randomAmount(800, 1500) 
           : randomAmount(20, 500);
         
         await createTransaction(token, {
+          accountId: account.id,
           categoryId: category.id,
           type: 'EXPENSE',
           amount,
