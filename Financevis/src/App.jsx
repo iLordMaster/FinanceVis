@@ -8,32 +8,25 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 import Pricing from "./pages/Pricing";
 
+import DashboardLayout from "./components/DashboardLayout";
+
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/profile" 
-        element={
-          <ProtectedRoute>
-            <ProfileSettings />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/pricing" 
-        element={<Pricing />} 
-      />
+      
+      {/* Protected Dashboard Layout Routes */}
+      <Route element={
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      }>
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/profile" element={<ProfileSettings />} />
+      </Route>
     </Routes>
   );
 }

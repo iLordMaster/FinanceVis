@@ -23,3 +23,11 @@
     padding: 1rem 0.75rem;
   }
 }
+
+.recharts-wrapper:focus,
+.recharts-surface:focus,
+.recharts-cartesian-grid:focus,
+.recharts-layer:focus,
+.recharts-tooltip-wrapper:focus {
+  outline: none !important;
+}

@@ -113,24 +113,50 @@
   border-radius: 12px;
   gap: 5px;
   border: 1px solid #27272a;
+  position: relative;
+}
+
+.nav-tab-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  background-color: #27272a;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+  /* Calculate width based on number of tabs */
+  width: calc((100% - 18px) / 3);
+  /* Move indicator based on active tab index, accounting for gaps */
+  transform: translateX(calc(var(--active-tab-index) * (100% + 5px)));
 }
 
 .nav-tab {
+  min-width: 0;
   padding: 8px 20px;
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
   color: #a1a1aa;
-  transition: all 0.2s;
+  transition: color 0.2s;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  justify-content: center;
+  width: 100%;
 }
 
-.nav-tab.active {
-  background-color: #27272a;
+.nav-tab:hover {
   color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+
+.nav-tab.active-text {
+  color: #ffffff;
+}
+
 
 .date-selector {
   background-color: #18181b;
@@ -539,4 +565,60 @@
 
 .avatar:hover {
   transform: scale(1.05);
+}
+
+/* Chart Time Selector */
+.chart-time-selector {
+  display: flex;
+  background-color: #18181b;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 2px;
+  border: 1px solid #27272a;
+  position: relative;
+  width: fit-content;
+}
+
+.chart-time-selector-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  background-color: #f97316;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+  width: 40px; 
+}
+
+.chart-time-option {
+  min-width: 40px;
+  padding: 4px 0;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #a1a1aa;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+}
+
+.chart-time-option:hover {
+  color: #ffffff;
+}
+
+.chart-time-option.active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.chart-time-option:focus {
+  outline: none;
 }

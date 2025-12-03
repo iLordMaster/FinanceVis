@@ -1,12 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt, FaChartLine, FaHome, FaDollarSign } from 'react-icons/fa';
 import { useUser } from '../../context/UserContext.jsx';
 
-const TopBar = ({ isActive, balance }) => {
+const TopBar = ({ balance }) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    // Helper function to get tab index from path
+    const getTabIndexFromPath = useCallback((path) => {
+        if (path === '/dashboard') return 0;
+        if (path === '/' || path === '/home') return 1;
+        if (path === '/pricing') return 2;
+        return 0; // default to dashboard
+    }, []);
+
+    const [activeTabIndex, setActiveTabIndex] = useState(() => getTabIndexFromPath(location.pathname));
 
     const { user } = useUser();
 
@@ -14,6 +25,11 @@ const TopBar = ({ isActive, balance }) => {
 
     const DEFAULT_AVATAR = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
     const USER_PFP = user?.profilePicture;
+
+    // Update active tab when route changes
+    useEffect(() => {
+        setActiveTabIndex(getTabIndexFromPath(location.pathname));
+    }, [location.pathname, getTabIndexFromPath]);
 
     const handleHomeClick = () => {
         navigate('/');
@@ -58,16 +74,17 @@ const TopBar = ({ isActive, balance }) => {
         <div className="top-balance-amount">{balance || "$0"}</div>
       </div>
 
-      <div className="nav-tabs">
-        <div className={`nav-tab ${isActive ? "active" : ""}`} onClick={handleDashboardClick}>
+      <div className="nav-tabs" style={{ '--active-tab-index': activeTabIndex }}>
+        <div className="nav-tab-indicator"></div>
+        <div className={`nav-tab ${activeTabIndex === 0 ? 'active-text' : ''}`} onClick={handleDashboardClick}>
             <FaChartLine style={{ marginRight: '8px'}}/>
             Dashboard
         </div>
-        <div className={`nav-tab ${!isActive ? "active" : ""}`} onClick={handleHomeClick}>
+        <div className={`nav-tab ${activeTabIndex === 1 ? 'active-text' : ''}`} onClick={handleHomeClick}>
             <FaHome style={{ marginRight: '8px'}}/>
             Spreadsheet
         </div>
-        <div className="nav-tab" onClick={() => navigate('/pricing')}>
+        <div className={`nav-tab ${activeTabIndex === 2 ? 'active-text' : ''}`} onClick={() => navigate('/pricing')}>
             <FaDollarSign style={{ marginRight: '8px'}}/>
             Pricing
         </div>

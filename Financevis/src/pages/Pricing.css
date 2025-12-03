@@ -1,34 +1,12 @@
-.pricing-container {
-  min-height: 100vh;
-  background-color: #0f111a;
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
-  padding: 60px 40px;
+.pricing-content {
+  width: 100%;
+  padding: 6rem 0;
 }
 
 .pricing-header {
   text-align: center;
   margin-bottom: 60px;
   position: relative;
-}
-
-.back-button {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: #18181b;
-  color: #e4e4e7;
-  border: 1px solid #27272a;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.back-button:hover {
-  background-color: #27272a;
-  transform: translateX(-5px);
 }
 
 .pricing-title {
@@ -217,8 +195,8 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .pricing-container {
-    padding: 40px 20px;
+  .pricing-content {
+    padding: 20px;
   }
 
   .pricing-title {
@@ -232,10 +210,5 @@
   .pricing-grid {
     grid-template-columns: 1fr;
   }
-
-  .back-button {
-    position: static;
-    margin-bottom: 30px;
-    width: fit-content;
-  }
 }
+

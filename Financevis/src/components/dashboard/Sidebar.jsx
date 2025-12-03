@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Sidebar = ({ activeMonth, onMonthChange }) => {
+const Sidebar = ({ activeMonth, onMonthChange, showMonthSelector = true }) => { 
   const months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -9,17 +9,19 @@ const Sidebar = ({ activeMonth, onMonthChange }) => {
   return (
     <div className="sidebar">
       <div className="logo">FV</div>
-      <div className="month-list">
-        {months.map((month) => (
-          <div 
-            key={month} 
-            className={`month-item ${activeMonth === month ? 'active' : ''}`}
-            onClick={() => onMonthChange(month)}
-          >
-            {month}
-          </div>
-        ))}
-      </div>
+      {showMonthSelector && (
+        <div className="month-list">
+          {months.map((month) => (
+            <div 
+              key={month} 
+              className={`month-item ${activeMonth === month ? 'active' : ''}`}
+              onClick={() => onMonthChange(month)}
+            >
+              {month}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

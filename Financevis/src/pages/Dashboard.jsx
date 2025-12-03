@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/dashboard/Sidebar';
-import TopBar from '../components/dashboard/TopBar';
+import { useOutletContext } from 'react-router-dom';
 import DashboardCard from '../components/dashboard/DashboardCard';
 import ChartPlaceholder from '../components/dashboard/ChartPlaceholder';
 import './dashboard.css';
@@ -17,9 +16,10 @@ import { DashboardService } from '../services/DashboardService';
 import PaywallModal from '../components/PaywallModal';
 
 const Dashboard = () => {
+  const { activeMonth, setActiveMonth } = useOutletContext();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeMonth, setActiveMonth] = useState('Jun');
+  // const [activeMonth, setActiveMonth] = useState('Jun'); // Managed by layout
   const [accounts, setAccounts] = useState([]);
   const [assets, setAssets] = useState([]);
   const [incomeGoal, setIncomeGoal] = useState(0);
@@ -105,131 +105,124 @@ const Dashboard = () => {
   console.log('Net Worth:', netWorth);
 
   return (
-    <div className="dashboard-container">
-      <Sidebar activeMonth={activeMonth} onMonthChange={setActiveMonth} />
-      <div className="main-content">
-        <TopBar isActive={true} balance={`$${totalAccountBalance.toLocaleString()}`} />
-        
-        <div className="dashboard-grid">
-          {/* Total Net Worth */}
-          <DashboardCard title="Total Net Worth" className="card-net-worth">
-            <div className="net-worth-amount">${netWorth.toLocaleString()}</div>
-          </DashboardCard>
+    <div className="dashboard-grid">
+      {/* Total Net Worth */}
+      <DashboardCard title="Total Net Worth" className="card-net-worth">
+        <div className="net-worth-amount">${netWorth.toLocaleString()}</div>
+      </DashboardCard>
 
-          {/* Spendings */}
-          <DashboardCard title="Spendings" className="card-spendings">
-            <LineChart selectedMonth={activeMonth} type="EXPENSE" />
-          </DashboardCard>
+      {/* Spendings */}
+      <DashboardCard title="Spendings" className="card-spendings">
+        <LineChart selectedMonth={activeMonth} type="EXPENSE" />
+      </DashboardCard>
 
 
-          {/* Income */}
-          <DashboardCard title="Income" className="card-income">
-            <LineChart selectedMonth={activeMonth} type="INCOME" />
-          </DashboardCard>
+      {/* Income */}
+      <DashboardCard title="Income" className="card-income">
+        <LineChart selectedMonth={activeMonth} type="INCOME" />
+      </DashboardCard>
 
-          {/* Spending Categories */}
-          <DashboardCard title="Spendings" className="card-categories">
-            <SpendingList selectedMonth={activeMonth} />
-          </DashboardCard>
+      {/* Spending Categories */}
+      <DashboardCard title="Spendings" className="card-categories">
+        <SpendingList selectedMonth={activeMonth} />
+      </DashboardCard>
 
-          {/* Income Goal */}
-          <DashboardCard className="card-income-goal">
+      {/* Income Goal */}
+      <DashboardCard className="card-income-goal">
+        <div 
+          style={{ cursor: 'pointer' }} 
+          onClick={() => setIsGoalModalOpen(true)}
+          title="Click to edit goal"
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#646cff' }}>
+                {incomeGoal > 0 ? Math.min(Math.round((ytdIncome / incomeGoal) * 100), 100) : 0}%
+              </div>
+              <div className="card-title">Income Goal (YTD)</div>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>
+              ${ytdIncome.toLocaleString()} / {incomeGoal.toLocaleString()}
+            </div>
+          </div>
+          <div className="progress-container">
             <div 
-              style={{ cursor: 'pointer' }} 
-              onClick={() => setIsGoalModalOpen(true)}
-              title="Click to edit goal"
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                <div>
-                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#646cff' }}>
-                    {incomeGoal > 0 ? Math.min(Math.round((ytdIncome / incomeGoal) * 100), 100) : 0}%
-                  </div>
-                  <div className="card-title">Income Goal (YTD)</div>
-                </div>
-                <div style={{ textAlign: 'right', fontSize: '0.9rem' }}>
-                  ${ytdIncome.toLocaleString()} / {incomeGoal.toLocaleString()}
-                </div>
-              </div>
-              <div className="progress-container">
-                <div 
-                  className="progress-bar" 
-                  style={{ width: `${incomeGoal > 0 ? Math.min((ytdIncome / incomeGoal) * 100, 100) : 0}%` }}
-                ></div>
-              </div>
-            </div>
-          </DashboardCard>
-
-          {/* Income Goal Modal */}
-          <EditIncomeGoalModal
-            isOpen={isGoalModalOpen}
-            onClose={() => setIsGoalModalOpen(false)}
-            currentGoal={incomeGoal}
-            onSave={(newGoal) => setIncomeGoal(newGoal)}
-          />
-
-          {/* Notifications */}
-          <DashboardCard title="Notification" className="card-notifications">
-            <div className="notification-item">
-              3 Bills are past Due, Pay soon to avoid late fees.
-            </div>
-          </DashboardCard>
-
-          {/* Next Month's Prediction */}
-          <DashboardCard title="Next Month's Prediction" className="card-prediction">
-            <div className="restricted-content" onClick={() => setIsPaywallOpen(true)}>
-              <div className="restricted-overlay">
-                <div className="lock-icon">🔒</div>
-                <div className="restricted-text">Premium Feature</div>
-                <div className="restricted-subtext">Click to unlock</div>
-              </div>
-            </div>
-          </DashboardCard>
-
-          {/* Paywall Modal */}
-          <PaywallModal 
-            isOpen={isPaywallOpen} 
-            onClose={() => setIsPaywallOpen(false)} 
-          />
-
-          {/* Income Source */}
-          <DashboardCard title="Income Source" className="card-income-source">
-            <BarChart selectedMonth={activeMonth} />
-          </DashboardCard>
-
-          {/* Assets */}
-          <DashboardCard title="Assets" className="card-assets">
-            <AssetDonutChart />
-            <AssetLegend />
-          </DashboardCard>
-
-          {/* Income & Expenses */}
-          <DashboardCard title="Income & Expenses" className="card-income-expenses">
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
-              <div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxExpenses}</div>
-                <div style={{ fontSize: '0.8rem', color: '#f97316' }}>Max. Expenses</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxIncome}</div>
-                <div style={{ fontSize: '0.8rem', color: '#4ade80' }}>Max. Income</div>
-              </div>
-            </div>
-            <DualLineChart />
-          </DashboardCard>
-
-          
-
-          {/* Misc (Dog) */}
-          <DashboardCard className="card-misc">
-            <div style={{ textAlign: 'center' }}>
-              <div className="card-title">Expenses for My Dogs and Cats</div>
-              <FaDog style={{ fontSize: '3rem', color: '#f97316', margin: '10px 0' }} />
-              <div style={{ fontSize: '0.8rem' }}>Routine Vet: 140</div>
-            </div>
-          </DashboardCard>
-
+              className="progress-bar" 
+              style={{ width: `${incomeGoal > 0 ? Math.min((ytdIncome / incomeGoal) * 100, 100) : 0}%` }}
+            ></div>
+          </div>
         </div>
-      </div>
+      </DashboardCard>
+
+      {/* Income Goal Modal */}
+      <EditIncomeGoalModal
+        isOpen={isGoalModalOpen}
+        onClose={() => setIsGoalModalOpen(false)}
+        currentGoal={incomeGoal}
+        onSave={(newGoal) => setIncomeGoal(newGoal)}
+      />
+
+      {/* Notifications */}
+      <DashboardCard title="Notification" className="card-notifications">
+        <div className="notification-item">
+          3 Bills are past Due, Pay soon to avoid late fees.
+        </div>
+      </DashboardCard>
+
+      {/* Next Month's Prediction */}
+      <DashboardCard title="Next Month's Prediction" className="card-prediction">
+        <div className="restricted-content" onClick={() => setIsPaywallOpen(true)}>
+          <div className="restricted-overlay">
+            <div className="lock-icon">🔒</div>
+            <div className="restricted-text">Premium Feature</div>
+            <div className="restricted-subtext">Click to unlock</div>
+          </div>
+        </div>
+      </DashboardCard>
+
+      {/* Paywall Modal */}
+      <PaywallModal 
+        isOpen={isPaywallOpen} 
+        onClose={() => setIsPaywallOpen(false)} 
+      />
+
+      {/* Income Source */}
+      <DashboardCard title="Income Source" className="card-income-source">
+        <BarChart selectedMonth={activeMonth} />
+      </DashboardCard>
+
+      {/* Assets */}
+      <DashboardCard title="Assets" className="card-assets">
+        <AssetDonutChart />
+        <AssetLegend />
+      </DashboardCard>
+
+      {/* Income & Expenses */}
+      <DashboardCard title="Income & Expenses" className="card-income-expenses">
+        <div style={{ display: 'flex', gap: '20px', marginBottom: '10px' }}>
+          <div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxExpenses}</div>
+            <div style={{ fontSize: '0.8rem', color: '#f97316' }}>Max. Expenses</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>${maxIncome}</div>
+            <div style={{ fontSize: '0.8rem', color: '#4ade80' }}>Max. Income</div>
+          </div>
+        </div>
+        <DualLineChart />
+      </DashboardCard>
+
+      
+
+      {/* Misc (Dog) */}
+      <DashboardCard className="card-misc">
+        <div style={{ textAlign: 'center' }}>
+          <div className="card-title">Expenses for My Dogs and Cats</div>
+          <FaDog style={{ fontSize: '3rem', color: '#f97316', margin: '10px 0' }} />
+          <div style={{ fontSize: '0.8rem' }}>Routine Vet: 140</div>
+        </div>
+      </DashboardCard>
+
     </div>
   );
 };

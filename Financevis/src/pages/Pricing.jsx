@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import './Pricing.css';
+import './dashboard.css';
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -64,11 +65,8 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="pricing-container">
+    <div className="pricing-content">
       <div className="pricing-header">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          ← Back to Dashboard
-        </button>
         <h1 className="pricing-title">Choose Your Plan</h1>
         <p className="pricing-subtitle">
           Unlock powerful features to take control of your finances
