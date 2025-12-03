@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import ProfileSettings from "./pages/ProfileSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
+import Pricing from "./pages/Pricing";
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
             <ProfileSettings />
           </ProtectedRoute>
         } 
+      />
+      <Route 
+        path="/pricing" 
+        element={<Pricing />} 
       />
     </Routes>
   );

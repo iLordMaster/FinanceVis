@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaCog, FaSignOutAlt, FaChartLine, FaHome } from 'react-icons/fa';
+import { FaUser, FaCog, FaSignOutAlt, FaChartLine, FaHome, FaDollarSign } from 'react-icons/fa';
 import { useUser } from '../../context/UserContext.jsx';
 
 const TopBar = ({ isActive, balance }) => {
@@ -60,12 +60,16 @@ const TopBar = ({ isActive, balance }) => {
 
       <div className="nav-tabs">
         <div className={`nav-tab ${isActive ? "active" : ""}`} onClick={handleDashboardClick}>
-            <FaChartLine style={{ marginRight: '8px' }}/>
+            <FaChartLine style={{ marginRight: '8px'}}/>
             Dashboard
         </div>
         <div className={`nav-tab ${!isActive ? "active" : ""}`} onClick={handleHomeClick}>
-            <FaHome style={{ marginRight: '8px' }}/>
+            <FaHome style={{ marginRight: '8px'}}/>
             Spreadsheet
+        </div>
+        <div className="nav-tab" onClick={() => navigate('/pricing')}>
+            <FaDollarSign style={{ marginRight: '8px'}}/>
+            Pricing
         </div>
       </div>
 

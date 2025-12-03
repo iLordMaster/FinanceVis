@@ -1,0 +1,241 @@
+.pricing-container {
+  min-height: 100vh;
+  background-color: #0f111a;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  padding: 60px 40px;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #18181b;
+  color: #e4e4e7;
+  border: 1px solid #27272a;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background-color: #27272a;
+  transform: translateX(-5px);
+}
+
+.pricing-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pricing-subtitle {
+  font-size: 1.2rem;
+  color: #a1a1aa;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+}
+
+.pricing-card {
+  background-color: #13151f;
+  border-radius: 24px;
+  padding: 40px 30px;
+  border: 2px solid #27272a;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card.highlighted {
+  border: 2px solid #f97316;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(219, 39, 119, 0.05) 100%);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%);
+  color: white;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.plan-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.plan-price {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #f97316;
+  margin-bottom: 10px;
+}
+
+.plan-period {
+  font-size: 1rem;
+  color: #a1a1aa;
+  font-weight: normal;
+}
+
+.plan-description {
+  font-size: 0.95rem;
+  color: #a1a1aa;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+  flex: 1;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  color: #e4e4e7;
+  border-bottom: 1px solid #27272a;
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-item.disabled {
+  color: #52525b;
+}
+
+.feature-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.feature-icon.check {
+  color: #4ade80;
+}
+
+.feature-icon.cross {
+  color: #52525b;
+}
+
+.plan-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.plan-button.primary {
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%);
+  color: white;
+}
+
+.plan-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3);
+}
+
+.plan-button.secondary {
+  background-color: #18181b;
+  color: #e4e4e7;
+  border: 2px solid #27272a;
+}
+
+.plan-button.secondary:hover {
+  background-color: #27272a;
+  border-color: #3f3f46;
+}
+
+.plan-button:active {
+  transform: translateY(0);
+}
+
+.pricing-footer {
+  text-align: center;
+  color: #a1a1aa;
+  font-size: 0.95rem;
+}
+
+.pricing-footer p {
+  margin: 10px 0;
+}
+
+.pricing-footer a {
+  color: #f97316;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.pricing-footer a:hover {
+  color: #db2777;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pricing-container {
+    padding: 40px 20px;
+  }
+
+  .pricing-title {
+    font-size: 2rem;
+  }
+
+  .pricing-subtitle {
+    font-size: 1rem;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .back-button {
+    position: static;
+    margin-bottom: 30px;
+    width: fit-content;
+  }
+}

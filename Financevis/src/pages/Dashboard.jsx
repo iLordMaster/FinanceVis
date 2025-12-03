@@ -14,6 +14,7 @@ import BarChart from '../components/dashboard/BarChart';
 import SpendingList from '../components/dashboard/SpendingList';
 import EditIncomeGoalModal from '../components/EditIncomeGoalModal';
 import { DashboardService } from '../services/DashboardService';
+import PaywallModal from '../components/PaywallModal';
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [incomeGoal, setIncomeGoal] = useState(0);
   const [ytdIncome, setYtdIncome] = useState(0);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -157,6 +159,7 @@ const Dashboard = () => {
             </div>
           </DashboardCard>
 
+          {/* Income Goal Modal */}
           <EditIncomeGoalModal
             isOpen={isGoalModalOpen}
             onClose={() => setIsGoalModalOpen(false)}
@@ -170,6 +173,23 @@ const Dashboard = () => {
               3 Bills are past Due, Pay soon to avoid late fees.
             </div>
           </DashboardCard>
+
+          {/* Next Month's Prediction */}
+          <DashboardCard title="Next Month's Prediction" className="card-prediction">
+            <div className="restricted-content" onClick={() => setIsPaywallOpen(true)}>
+              <div className="restricted-overlay">
+                <div className="lock-icon">🔒</div>
+                <div className="restricted-text">Premium Feature</div>
+                <div className="restricted-subtext">Click to unlock</div>
+              </div>
+            </div>
+          </DashboardCard>
+
+          {/* Paywall Modal */}
+          <PaywallModal 
+            isOpen={isPaywallOpen} 
+            onClose={() => setIsPaywallOpen(false)} 
+          />
 
           {/* Income Source */}
           <DashboardCard title="Income Source" className="card-income-source">
