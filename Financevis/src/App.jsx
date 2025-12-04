@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import Overview from "./pages/Overview";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +22,7 @@ function App() {
           <DashboardLayout />
         </ProtectedRoute>
       }>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Overview />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/profile" element={<ProfileSettings />} />

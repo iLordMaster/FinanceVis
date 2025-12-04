@@ -1,84 +1,93 @@
+/* Profile Settings Page - Matching Dashboard Aesthetic */
 .profile-settings {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background-color: #0f111a; /* Match dashboard background */
   padding: 2rem;
-  color: #e2e8f0;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
 }
 
 .profile-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 2.5rem;
+  background-color: #13151f; /* Match dashboard cards */
+  border-radius: 24px; /* Match dashboard card radius */
+  padding: 3rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .profile-container h1 {
   font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #f1f5f9;
-  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .profile-container h2 {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin-bottom: 1.5rem;
-  color: #cbd5e1;
+  color: #a1a1aa;
+  font-weight: 500;
 }
 
 /* Messages */
 .error-message {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
   border: 1px solid #ef4444;
   color: #fca5a5;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 1.5rem;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .success-message {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.15);
   border: 1px solid #10b981;
   color: #6ee7b7;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 1.5rem;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
   font-size: 1.2rem;
-  color: #94a3b8;
+  color: #a1a1aa;
 }
 
 /* Profile Picture Section */
 .profile-picture-section {
   margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #27272a; /* Match dashboard divider */
 }
 
 .picture-container {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
   flex-wrap: wrap;
 }
 
 .picture-preview {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(51, 65, 85, 0.5);
-  border: 3px solid #475569;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: #18181b;
+  border: 3px solid #27272a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+.picture-preview:hover {
+  transform: scale(1.05);
 }
 
 .picture-preview img {
@@ -93,8 +102,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  font-size: 3rem;
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%); /* Match dashboard gradient */
+  font-size: 3.5rem;
   font-weight: bold;
   color: white;
 }
@@ -105,49 +114,55 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .picture-actions {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  flex: 1;
+  max-width: 250px;
 }
 
 .btn-upload,
 .btn-delete {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-upload {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%); /* Match dashboard accent */
   color: white;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
 .btn-upload:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
 }
 
 .btn-delete {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid #ef4444;
-  color: #fca5a5;
+  background: #18181b;
+  border: 1px solid #27272a;
+  color: #ef4444;
 }
 
 .btn-delete:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
   transform: translateY(-2px);
 }
 
@@ -155,11 +170,12 @@
 .btn-delete:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* Profile Information Section */
 .profile-info-section {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .form-group {
@@ -168,70 +184,78 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #cbd5e1;
+  margin-bottom: 0.75rem;
+  color: #e4e4e7;
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.875rem;
-  background: rgba(51, 65, 85, 0.5);
-  border: 1px solid #475569;
-  border-radius: 10px;
-  color: #e2e8f0;
+  padding: 1rem;
+  background: #18181b; /* Match dashboard input bg */
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  color: #e4e4e7;
   font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #f97316; /* Orange accent on focus */
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  background: #1a1a1f;
 }
 
 .form-group input::placeholder {
-  color: #64748b;
+  color: #52525b;
 }
 
 /* Buttons */
 .btn-save,
 .btn-back {
-  padding: 0.875rem 2rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%); /* Match dashboard gradient */
   color: white;
   margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
 .btn-save:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
 }
 
 .btn-save:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btn-back {
-  background: rgba(51, 65, 85, 0.5);
-  border: 1px solid #475569;
-  color: #cbd5e1;
+  background: #18181b;
+  border: 1px solid #27272a;
+  color: #e4e4e7;
 }
 
 .btn-back:hover {
-  background: rgba(51, 65, 85, 0.7);
+  background: #27272a;
   transform: translateY(-2px);
+  border-color: #3f3f46;
 }
 
 /* Responsive Design */
@@ -241,24 +265,55 @@
   }
 
   .profile-container {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .profile-container h1 {
+    font-size: 1.75rem;
+  }
+
+  .picture-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .picture-preview {
+    width: 140px;
+    height: 140px;
+  }
+
+  .picture-placeholder {
+    font-size: 3rem;
+  }
+
+  .picture-actions {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .btn-upload,
+  .btn-delete {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 1.5rem 1rem;
   }
 
   .profile-container h1 {
     font-size: 1.5rem;
   }
 
-  .picture-container {
-    flex-direction: column;
-    align-items: center;
+  .picture-preview {
+    width: 120px;
+    height: 120px;
   }
 
-  .picture-actions {
-    width: 100%;
-  }
-
-  .btn-upload,
-  .btn-delete {
-    width: 100%;
+  .picture-placeholder {
+    font-size: 2.5rem;
   }
 }

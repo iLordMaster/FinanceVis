@@ -165,7 +165,7 @@ const Dashboard = () => {
       {/* Notifications */}
       <DashboardCard title="Notification" className="card-notifications">
         <div className="notification-item">
-          3 Bills are past Due, Pay soon to avoid late fees.
+          You have 0 bills due this month.
         </div>
       </DashboardCard>
 
@@ -219,7 +219,7 @@ const Dashboard = () => {
         <div style={{ textAlign: 'center' }}>
           <div className="card-title">Expenses for My Dogs and Cats</div>
           <FaDog style={{ fontSize: '3rem', color: '#f97316', margin: '10px 0' }} />
-          <div style={{ fontSize: '0.8rem' }}>Routine Vet: 140</div>
+          <div style={{ fontSize: '0.8rem' }}>Coming soon</div>
         </div>
       </DashboardCard>
 

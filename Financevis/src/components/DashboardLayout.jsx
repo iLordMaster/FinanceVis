@@ -6,7 +6,9 @@ import { UserApi } from '../api/userApi';
 import '../pages/dashboard.css';
 
 const DashboardLayout = () => {
-  const [activeMonth, setActiveMonth] = useState('Jun');
+  const currentMonth = new Date().getMonth();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const [activeMonth, setActiveMonth] = useState(months[currentMonth]);
   const [balance, setBalance] = useState("$0");
   const location = useLocation();
 

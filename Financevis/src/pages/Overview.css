@@ -1,0 +1,379 @@
+.overview-container {
+  width: 100%;
+  animation: fadeIn 0.5s ease;
+  padding-top: 6.5rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hero Section */
+.overview-hero {
+  margin-bottom: 30px;
+  animation: slideDown 0.6s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-greeting h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.hero-greeting p {
+  font-size: 1.1rem;
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Middle Section */
+.overview-middle {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.recent-activity-card {
+  min-height: 400px;
+}
+
+.quick-actions-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-family: inherit;
+  flex: 1;
+}
+
+.quick-action-btn.income {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.quick-action-btn.expense {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.quick-action-btn.income:hover {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+}
+
+.quick-action-btn.expense:hover {
+  border-color: rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.1) 100%);
+}
+
+.action-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.quick-action-btn.income .action-icon {
+  background-color: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.quick-action-btn.expense .action-icon {
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+}
+
+.action-text {
+  flex: 1;
+}
+
+.action-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e4e4e7;
+  margin-bottom: 4px;
+}
+
+.action-subtitle {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+/* Lower Section */
+.overview-lower {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* Account Balance Card */
+.balance-display {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 0;
+}
+
+.balance-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #646cff 0%, #7c3aed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.balance-info {
+  flex: 1;
+}
+
+.balance-amount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.balance-label {
+  font-size: 0.9rem;
+  color: #a1a1aa;
+}
+
+/* Tips Card */
+.tip-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px 0;
+}
+
+.tip-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 1rem;
+  color: #e4e4e7;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Mini Chart */
+.mini-chart {
+  padding: 10px 0;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend-dot.income {
+  background-color: #4ade80;
+}
+
+.legend-dot.expense {
+  background-color: #f97316;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 120px;
+  gap: 8px;
+  padding: 0 10px;
+}
+
+.chart-month {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-bars-wrapper {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 100px;
+  width: 100%;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 12px;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.chart-bar.income {
+  background: linear-gradient(to top, #4ade80, #22c55e);
+}
+
+.chart-bar.expense {
+  background: linear-gradient(to top, #f97316, #ea580c);
+}
+
+.chart-bar:hover {
+  opacity: 0.8;
+  transform: scaleY(1.05);
+}
+
+.chart-month-label {
+  font-size: 0.75rem;
+  color: #71717a;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .overview-middle {
+    grid-template-columns: 1fr;
+  }
+  
+  .overview-lower {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-greeting h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-greeting p {
+    font-size: 1rem;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .overview-middle {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .overview-lower {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .balance-amount {
+    font-size: 1.6rem;
+  }
+  
+  .chart-bars {
+    height: 100px;
+  }
+  
+  .chart-bars-wrapper {
+    height: 80px;
+  }
+  
+  .chart-bar {
+    width: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-greeting h1 {
+    font-size: 1.6rem;
+  }
+  
+  .quick-action-btn {
+    padding: 15px;
+  }
+  
+  .action-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .balance-display {
+    flex-direction: column;
+    text-align: center;
+  }
+}

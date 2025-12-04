@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile, updateProfile, uploadProfilePicture, deleteProfilePicture } from '../api/profileApi';
+import { useUser } from '../context/UserContext';
 import './ProfileSettings.css';
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
+  const { user: contextUser, updateUser } = useUser(); // Get user from context
   const fileInputRef = useRef(null);
   
   const [user, setUser] = useState(null);
@@ -21,17 +23,17 @@ const ProfileSettings = () => {
   });
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    // If context user is available, use it to fetch full profile
+    if (contextUser?.id) {
+      fetchUserProfile(contextUser.id);
+    } else if (!contextUser) {
+        // If no user in context, we might be loading or not logged in.
+        // ProtectedRoute handles the "not logged in" case, so we just wait.
+    }
+  }, [contextUser]);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (userId) => {
     try {
-      const userId = localStorage.getItem('userId');
-      if (!userId) {
-        navigate('/login');
-        return;
-      }
-
       const userData = await getUserProfile(userId);
       setUser(userData);
       setFormData({
@@ -60,16 +62,14 @@ const ProfileSettings = () => {
     setSaving(true);
 
     try {
-      const userId = localStorage.getItem('userId');
-      const result = await updateProfile(userId, formData);
+      if (!user?.id) throw new Error("User ID not found");
+
+      const result = await updateProfile(user.id, formData);
       
       setUser(result.user);
+      updateUser(result.user); // Update context
       setSuccess('Profile updated successfully!');
       
-      // Update localStorage if name changed
-      if (formData.name) {
-        localStorage.setItem('userName', formData.name);
-      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -110,13 +110,15 @@ const ProfileSettings = () => {
     setUploading(true);
 
     try {
-      const userId = localStorage.getItem('userId');
-      const result = await uploadProfilePicture(userId, file);
+      if (!user?.id) throw new Error("User ID not found");
+
+      const result = await uploadProfilePicture(user.id, file);
       
       setUser(prev => ({
         ...prev,
         profilePicture: result.profilePicture,
       }));
+      updateUser({ ...user, profilePicture: result.profilePicture }); // Update context
       setPreviewImage(null);
       setSuccess('Profile picture updated successfully!');
     } catch (err) {
@@ -137,13 +139,15 @@ const ProfileSettings = () => {
     setUploading(true);
 
     try {
-      const userId = localStorage.getItem('userId');
-      await deleteProfilePicture(userId);
+      if (!user?.id) throw new Error("User ID not found");
+
+      await deleteProfilePicture(user.id);
       
       setUser(prev => ({
         ...prev,
         profilePicture: '',
       }));
+      updateUser({ ...user, profilePicture: '' }); // Update context
       setSuccess('Profile picture deleted successfully!');
     } catch (err) {
       setError(err.message);
