@@ -2,34 +2,53 @@ import { useState, useEffect } from 'react';
 import './AddIncomeModal.css';
 import { TransactionApi } from '../api/transactionApi';
 import { CategoryApi } from '../api/categoryApi';
+import { AccountApi } from '../api/accountApi';
 
 function AddIncomeModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     amount: '',
     categoryId: '',
+    accountId: '',
     date: new Date().toISOString().split('T')[0],
     description: ''
   });
   const [categories, setCategories] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Fetch income categories on mount
+  // Fetch income categories and accounts on mount
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await CategoryApi.getCategories('INCOME');
-        setCategories(response.categories || []);
-        // Set first category as default if available
-        if (response.categories && response.categories.length > 0 && !formData.categoryId) {
-          setFormData(prev => ({ ...prev, categoryId: response.categories[0]._id }));
+        const [categoriesResponse, accountsResponse] = await Promise.all([
+          CategoryApi.getCategories('INCOME'),
+          AccountApi.getAccounts()
+        ]);
+
+        console.log(accountsResponse);
+        console.log(categoriesResponse);
+        
+        setCategories(categoriesResponse.categories || []);
+        setAccounts(accountsResponse.accounts || []);
+        
+        // Set first category and account as default if available
+        const updates = {};
+        if (categoriesResponse.categories && categoriesResponse.categories.length > 0 && !formData.categoryId) {
+          updates.categoryId = categoriesResponse.categories[0].id;
+        }
+        if (accountsResponse.accounts && accountsResponse.accounts.length > 0 && !formData.accountId) {
+          updates.accountId = accountsResponse.accounts[0].id;
+        }
+        if (Object.keys(updates).length > 0) {
+          setFormData(prev => ({ ...prev, ...updates }));
         }
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        console.error('Error fetching data:', err);
       }
     };
     if (isOpen) {
-      fetchCategories();
+      fetchData();
     }
   }, [isOpen]);
 
@@ -51,13 +70,17 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
     setError('');
 
     try {
-      // Validate category selection
+      // Validate required fields
       if (!formData.categoryId) {
         throw new Error('Please select a category');
+      }
+      if (!formData.accountId) {
+        throw new Error('Please select an account');
       }
 
       // Create transaction data
       const transactionData = {
+        accountId: formData.accountId,
         categoryId: formData.categoryId,
         type: 'INCOME',
         amount: parseFloat(formData.amount),
@@ -71,7 +94,8 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
       // Reset form and close modal on success
       setFormData({
         amount: '',
-        categoryId: categories.length > 0 ? categories[0]._id : '',
+        categoryId: categories.length > 0 ? categories[0].id : '',
+        accountId: accounts.length > 0 ? accounts[0].id : '',
         date: new Date().toISOString().split('T')[0],
         description: ''
       });
@@ -122,7 +146,7 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
             >
               <option value="">Select a category</option>
               {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>
+                <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}
@@ -130,6 +154,29 @@ function AddIncomeModal({ isOpen, onClose, onSuccess }) {
             {categories.length === 0 && (
               <small style={{ color: '#8a8d98', fontSize: '0.8rem' }}>
                 No income categories found. Create one first.
+              </small>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="accountId">Account</label>
+            <select
+              id="accountId"
+              name="accountId"
+              value={formData.accountId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select an account</option>
+              {accounts.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+              ))}
+            </select>
+            {accounts.length === 0 && (
+              <small style={{ color: '#8a8d98', fontSize: '0.8rem' }}>
+                No accounts found. Create one first.
               </small>
             )}
           </div>

@@ -30,7 +30,7 @@
 }
 
 .empty-state-action {
-  background: linear-gradient(135deg, #646cff 0%, #7c3aed 100%);
+  background-color: #646cff;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -43,6 +43,7 @@
 }
 
 .empty-state-action:hover {
+  background-color: #7c3aed;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(100, 108, 255, 0.4);
 }

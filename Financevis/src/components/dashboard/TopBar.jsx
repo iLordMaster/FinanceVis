@@ -77,15 +77,15 @@ const TopBar = ({ balance }) => {
       <div className="nav-tabs" style={{ '--active-tab-index': activeTabIndex }}>
         <div className="nav-tab-indicator"></div>
         <div className={`nav-tab ${activeTabIndex === 0 ? 'active-text' : ''}`} onClick={handleDashboardClick}>
-            <FaChartLine size={25} style={{ marginRight: '8px'}}/>
+            <FaChartLine style={{ marginRight: '8px', fontSize: '24px' }}/>
             Dashboard
         </div>
         <div className={`nav-tab ${activeTabIndex === 1 ? 'active-text' : ''}`} onClick={handleHomeClick}>
-            <FaHome size={25} style={{ marginRight: '8px'}}/>
+            <FaHome style={{ marginRight: '8px', fontSize: '24px' }}/>
             Overview
         </div>
         <div className={`nav-tab ${activeTabIndex === 2 ? 'active-text' : ''}`} onClick={() => navigate('/pricing')}>
-            <FaDollarSign style={{ marginRight: '8px'}}/>
+            <FaDollarSign style={{ marginRight: '8px', fontSize: '18px' }}/>
             Pricing
         </div>
       </div>
