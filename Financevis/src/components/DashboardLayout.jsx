@@ -1,46 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import Sidebar from './dashboard/Sidebar';
-import TopBar from './dashboard/TopBar';
-import { UserApi } from '../api/userApi';
-import '../pages/dashboard.css';
+import React, { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Sidebar from "./dashboard/Sidebar";
+import TopBar from "./dashboard/TopBar";
+import { UserApi } from "../api/userApi";
+import { useAccount } from "../context/AccountContext";
+import "../pages/dashboard.css";
 
 const DashboardLayout = () => {
   const currentMonth = new Date().getMonth();
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const [activeMonth, setActiveMonth] = useState(months[currentMonth]);
   const [balance, setBalance] = useState("$0");
+  const [allAccounts, setAllAccounts] = useState([]);
   const location = useLocation();
+  const { selectedAccount } = useAccount();
 
-  // Fetch balance for TopBar
+  // Fetch all accounts for balance calculation
   useEffect(() => {
-    const fetchBalance = async () => {
+    const fetchAccounts = async () => {
       try {
-        const accountsData = await UserApi.request('/api/dashboard/account-summary');
+        const accountsData = await UserApi.request(
+          "/api/dashboard/account-summary"
+        );
         if (Array.isArray(accountsData)) {
-          const totalBalance = accountsData.reduce((sum, account) => sum + account.balance, 0);
-          setBalance(`$${totalBalance.toLocaleString()}`);
+          setAllAccounts(accountsData);
         }
       } catch (error) {
-        console.error('Error fetching balance for layout:', error);
+        console.error("Error fetching accounts for layout:", error);
       }
     };
 
-    fetchBalance();
+    fetchAccounts();
   }, []);
 
+  // Update balance when selected account or accounts change
+  useEffect(() => {
+    if (selectedAccount) {
+      // Show selected account's balance
+      setBalance(`$${selectedAccount.balance.toLocaleString()}`);
+    } else if (allAccounts.length > 0) {
+      // Show total balance of all accounts
+      const totalBalance = allAccounts.reduce(
+        (sum, account) => sum + account.balance,
+        0
+      );
+      setBalance(`$${totalBalance.toLocaleString()}`);
+    }
+  }, [selectedAccount, allAccounts]);
+
   // Determine if Sidebar should show active month (only for Dashboard page)
-  const showMonthSelector = location.pathname === '/dashboard';
+  const showMonthSelector = location.pathname === "/dashboard";
 
   return (
     <div className="dashboard-container">
-      <Sidebar 
-        activeMonth={activeMonth} 
+      <Sidebar
+        activeMonth={activeMonth}
         onMonthChange={setActiveMonth}
         showMonthSelector={showMonthSelector}
       />
       <div className="main-content">
-        <TopBar isActive={location.pathname === '/dashboard'} balance={balance} />
+        <TopBar
+          isActive={location.pathname === "/dashboard"}
+          balance={balance}
+        />
         <Outlet context={{ activeMonth, setActiveMonth }} />
       </div>
     </div>

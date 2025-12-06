@@ -1,25 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getUserProfile, updateProfile, uploadProfilePicture, deleteProfilePicture } from '../api/profileApi';
-import { useUser } from '../context/UserContext';
-import './ProfileSettings.css';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import "./ProfileSettings.css";
+import { ProfileApi } from "../api/profileApi";
 
 const ProfileSettings = () => {
   const navigate = useNavigate();
   const { user: contextUser, updateUser } = useUser(); // Get user from context
   const fileInputRef = useRef(null);
-  
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
   });
 
   useEffect(() => {
@@ -27,18 +27,18 @@ const ProfileSettings = () => {
     if (contextUser?.id) {
       fetchUserProfile(contextUser.id);
     } else if (!contextUser) {
-        // If no user in context, we might be loading or not logged in.
-        // ProtectedRoute handles the "not logged in" case, so we just wait.
+      // If no user in context, we might be loading or not logged in.
+      // ProtectedRoute handles the "not logged in" case, so we just wait.
     }
   }, [contextUser]);
 
   const fetchUserProfile = async (userId) => {
     try {
-      const userData = await getUserProfile(userId);
+      const userData = await ProfileApi.getUserProfile(userId);
       setUser(userData);
       setFormData({
-        name: userData.name || '',
-        email: userData.email || '',
+        name: userData.name || "",
+        email: userData.email || "",
       });
       setLoading(false);
     } catch (err) {
@@ -49,7 +49,7 @@ const ProfileSettings = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -57,19 +57,20 @@ const ProfileSettings = () => {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setSaving(true);
 
     try {
       if (!user?.id) throw new Error("User ID not found");
 
-      const result = await updateProfile(user.id, formData);
-      
-      setUser(result.user);
-      updateUser(result.user); // Update context
-      setSuccess('Profile updated successfully!');
-      
+      const result = await ProfileApi.updateProfile(user.id, formData);
+
+      // Backend returns { message, user }
+      const updatedUser = result.user;
+      setUser(updatedUser);
+      updateUser(updatedUser); // Update context
+      setSuccess("Profile updated successfully!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -81,14 +82,14 @@ const ProfileSettings = () => {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
-        setError('Please select an image file');
+      if (!file.type.startsWith("image/")) {
+        setError("Please select an image file");
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        setError('Image size should be less than 5MB');
+        setError("Image size should be less than 5MB");
         return;
       }
 
@@ -105,22 +106,21 @@ const ProfileSettings = () => {
   };
 
   const handleImageUpload = async (file) => {
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setUploading(true);
 
     try {
       if (!user?.id) throw new Error("User ID not found");
 
-      const result = await uploadProfilePicture(user.id, file);
-      
-      setUser(prev => ({
-        ...prev,
-        profilePicture: result.profilePicture,
-      }));
-      updateUser({ ...user, profilePicture: result.profilePicture }); // Update context
+      const result = await ProfileApi.uploadProfilePicture(user.id, file);
+
+      // Backend returns { message, profilePicture }
+      const updatedUser = { ...user, profilePicture: result.profilePicture };
+      setUser(updatedUser);
+      updateUser(updatedUser); // Update context
       setPreviewImage(null);
-      setSuccess('Profile picture updated successfully!');
+      setSuccess("Profile picture updated successfully!");
     } catch (err) {
       setError(err.message);
       setPreviewImage(null);
@@ -130,25 +130,27 @@ const ProfileSettings = () => {
   };
 
   const handleImageDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete your profile picture?')) {
+    if (
+      !window.confirm("Are you sure you want to delete your profile picture?")
+    ) {
       return;
     }
 
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setUploading(true);
 
     try {
       if (!user?.id) throw new Error("User ID not found");
 
-      await deleteProfilePicture(user.id);
-      
-      setUser(prev => ({
+      await ProfileApi.deleteProfilePicture(user.id);
+
+      setUser((prev) => ({
         ...prev,
-        profilePicture: '',
+        profilePicture: "",
       }));
-      updateUser({ ...user, profilePicture: '' }); // Update context
-      setSuccess('Profile picture deleted successfully!');
+      updateUser({ ...user, profilePicture: "" }); // Update context
+      setSuccess("Profile picture deleted successfully!");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -187,30 +189,30 @@ const ProfileSettings = () => {
                 <img src={user.profilePicture} alt="Profile" />
               ) : (
                 <div className="picture-placeholder">
-                  <span>{user?.name?.charAt(0)?.toUpperCase() || '?'}</span>
+                  <span>{user?.name?.charAt(0)?.toUpperCase() || "?"}</span>
                 </div>
               )}
               {uploading && <div className="upload-overlay">Uploading...</div>}
             </div>
-            
+
             <div className="picture-actions">
               <input
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileSelect}
                 accept="image/*"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
-              <button 
-                onClick={triggerFileInput} 
+              <button
+                onClick={triggerFileInput}
                 className="btn-upload"
                 disabled={uploading}
               >
-                {user?.profilePicture ? 'Change Picture' : 'Upload Picture'}
+                {user?.profilePicture ? "Change Picture" : "Upload Picture"}
               </button>
               {user?.profilePicture && (
-                <button 
-                  onClick={handleImageDelete} 
+                <button
+                  onClick={handleImageDelete}
                   className="btn-delete"
                   disabled={uploading}
                 >
@@ -250,7 +252,7 @@ const ProfileSettings = () => {
             </div>
 
             <button type="submit" className="btn-save" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </form>
         </div>

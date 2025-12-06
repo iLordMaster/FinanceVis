@@ -80,7 +80,6 @@ function Login() {
 
   return (
     <div className="app">
-      <Navbar />
       <div className="login-container">
         <div className="login-wrapper">
           <div className="login-header">

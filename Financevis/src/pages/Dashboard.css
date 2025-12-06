@@ -4,7 +4,7 @@
   min-height: 100vh;
   background-color: #0f111a; /* Deep dark background */
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Sidebar */
@@ -25,10 +25,10 @@
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #4201ac;
-    margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4201ac;
+  margin-bottom: 20px;
 }
 
 .month-list {
@@ -49,7 +49,8 @@
   letter-spacing: 1px;
 }
 
-.month-item:hover, .month-item.active {
+.month-item:hover,
+.month-item.active {
   color: #f97316; /* Orange highlight */
   font-weight: bold;
 }
@@ -81,8 +82,8 @@
 }
 
 .app-title {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-title h1 {
@@ -100,10 +101,10 @@
 }
 
 .top-balance-amount {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #2dd4bf; /* Teal/Green */
-    margin-top: 5px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2dd4bf; /* Teal/Green */
+  margin-top: 5px;
 }
 
 .nav-tabs {
@@ -123,7 +124,7 @@
   height: calc(100% - 8px);
   background-color: #27272a;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
   /* Calculate width based on number of tabs */
@@ -156,7 +157,6 @@
 .nav-tab.active-text {
   color: #ffffff;
 }
-
 
 .date-selector {
   background-color: #18181b;
@@ -237,7 +237,11 @@
 /* Specific Card Styles */
 .card-net-worth {
   grid-column: span 1;
-  background: linear-gradient(135deg, #f97316 0%, #db2777 100%); /* Orange to Pink */
+  background: linear-gradient(
+    135deg,
+    #f97316 0%,
+    #db2777 100%
+  ); /* Orange to Pink */
   color: white;
   justify-content: center;
 }
@@ -380,13 +384,21 @@
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(219, 39, 119, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.1) 0%,
+    rgba(219, 39, 119, 0.1) 100%
+  );
   border: 2px dashed #3f3f46;
   transition: all 0.3s ease;
 }
 
 .restricted-content:hover {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(219, 39, 119, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.15) 0%,
+    rgba(219, 39, 119, 0.15) 100%
+  );
   border-color: #f97316;
   transform: scale(1.02);
 }
@@ -414,7 +426,6 @@
   color: #a1a1aa;
 }
 
-
 /* Chart Placeholder */
 .chart-placeholder {
   flex: 1;
@@ -429,13 +440,13 @@
   border: 1px dashed #27272a;
 }
 
-
 /* Responsive */
 @media (max-width: 1400px) {
   .dashboard-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-  .card-categories, .card-notifications {
+  .card-categories,
+  .card-notifications {
     grid-column: span 1;
     grid-row: span 1;
   }
@@ -445,7 +456,8 @@
   .dashboard-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .card-income-goal, .card-income-expenses {
+  .card-income-goal,
+  .card-income-expenses {
     grid-column: span 2;
   }
 }
@@ -488,9 +500,16 @@
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  .card-net-worth, .card-spendings, .card-income, 
-  .card-categories, .card-income-goal, .card-notifications, 
-  .card-income-source, .card-income-expenses, .card-assets, .card-misc {
+  .card-net-worth,
+  .card-spendings,
+  .card-income,
+  .card-categories,
+  .card-income-goal,
+  .card-notifications,
+  .card-income-source,
+  .card-income-expenses,
+  .card-assets,
+  .card-misc {
     grid-column: span 1;
   }
 }
@@ -503,7 +522,8 @@
   background-color: #18181b;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  min-width: 220px;
+  min-width: 320px;
+  max-width: 400px;
   padding: 8px 0;
   z-index: 1000;
   animation: dropdownFadeIn 0.2s ease-out;
@@ -521,6 +541,89 @@
   }
 }
 
+/* Account Item Styles */
+.account-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #e4e4e7;
+  font-size: 0.9rem;
+  gap: 12px;
+}
+
+.account-item:hover {
+  background-color: #27272a;
+}
+
+.account-item.active {
+  background-color: rgba(249, 115, 22, 0.1);
+  border-left: 3px solid #f97316;
+}
+
+.account-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.account-type-icon {
+  font-size: 1.2rem;
+  color: #a1a1aa;
+  flex-shrink: 0;
+}
+
+.account-item.active .account-type-icon {
+  color: #f97316;
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.account-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e4e4e7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-type {
+  font-size: 0.75rem;
+  color: #71717a;
+  text-transform: capitalize;
+}
+
+.account-balance {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2dd4bf;
+  flex-shrink: 0;
+}
+
+.account-item.active .account-balance {
+  color: #f97316;
+}
+
+/* Loading State */
+.dropdown-loading {
+  padding: 20px;
+  text-align: center;
+  color: #a1a1aa;
+  font-size: 0.9rem;
+}
+
+/* Regular Dropdown Items (Profile, Logout) */
 .dropdown-item {
   display: flex;
   align-items: center;
@@ -586,10 +689,10 @@
   height: calc(100% - 8px);
   background-color: #f97316;
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
-  width: 40px; 
+  width: 40px;
 }
 
 .chart-time-option {

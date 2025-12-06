@@ -1,100 +1,94 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import Api from "./api";
 
-// Get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('token');
-};
+export class ProfileApi extends Api {
+  static api_url = Api.api_url + "/users";
 
-// Update user profile (name, email)
-export const updateProfile = async (userId, data) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${userId}/profile`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`,
-      },
-      body: JSON.stringify(data),
-    });
+  // Get user profile
+  static async getUserProfile(userId) {
+    try {
+      const response = await this.request(`${this.api_url}/${userId}`, {
+        method: "GET",
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to update profile');
+      console.log(response);
+
+      if (!response.id) {
+        throw new Error("User ID not found");
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    throw error;
   }
-};
 
-// Upload profile picture
-export const uploadProfilePicture = async (userId, file) => {
-  try {
-    const formData = new FormData();
-    formData.append('profilePicture', file);
+  // Update user profile (name, email)
+  static async updateProfile(userId, data) {
+    try {
+      const response = await this.request(`${this.api_url}/${userId}/profile`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
 
-    const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      },
-      body: formData,
-    });
+      console.log(response);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to upload profile picture');
+      if (!response.user || !response.user.id) {
+        throw new Error("User ID not found");
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error uploading profile picture:', error);
-    throw error;
   }
-};
 
-// Delete profile picture
-export const deleteProfilePicture = async (userId) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      },
-    });
+  // Upload profile picture
+  static async uploadProfilePicture(userId, file) {
+    try {
+      const formData = new FormData();
+      formData.append("profilePicture", file);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to delete profile picture');
+      const response = await this.request(
+        `${this.api_url}/${userId}/profile-picture`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      console.log(response);
+
+      if (!response.profilePicture) {
+        throw new Error("Profile picture URL not returned");
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error deleting profile picture:', error);
-    throw error;
   }
-};
 
-// Get user profile
-export const getUserProfile = async (userId) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`,
-      },
-    });
+  // Delete profile picture
+  static async deleteProfilePicture(userId) {
+    try {
+      const response = await this.request(
+        `${this.api_url}/${userId}/profile-picture`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to fetch user profile');
+      if (!response.id) {
+        throw new Error("User ID not found");
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Error deleting profile picture:", error);
+      throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    throw error;
   }
-};
+}

@@ -25,48 +25,75 @@ export const UserProvider = ({ children }) => {
         const storedUser = localStorage.getItem('user');
         const storedToken = localStorage.getItem('token');
 
+        console.log('[UserContext] Initializing user session...');
+
         if (storedUser && storedToken) {
           const parsedUser = JSON.parse(storedUser);
           const parsedToken = JSON.parse(storedToken);
 
           // Check if token is expired
           const now = Date.now();
+          const timeUntilExpiry = parsedToken.expiry - now;
+          const hoursUntilExpiry = (timeUntilExpiry / (1000 * 60 * 60)).toFixed(2);
+          
+          console.log(`[UserContext] Token expires in ${hoursUntilExpiry} hours`);
+
           if (parsedToken.expiry && now < parsedToken.expiry) {
-            // Set initial state from localStorage
+            // Set initial state from localStorage FIRST
+            // This ensures the user stays logged in even if profile fetch fails
             setToken(parsedToken.token);
+            setUser(parsedUser);
             setIsAuthenticated(true);
             
+            console.log('[UserContext] User authenticated from localStorage');
+            
             // Fetch full user profile to get latest data (like profile picture)
+            // This is a non-critical operation - if it fails, we keep the cached user
             try {
               const userId = parsedUser.id || parsedUser._id;
               if (userId) {
+                console.log('[UserContext] Fetching fresh user profile...');
                 const fullUserProfile = await UserApi.getUser(userId);
                 setUser(fullUserProfile);
                 localStorage.setItem('user', JSON.stringify(fullUserProfile));
+                console.log('[UserContext] User profile updated successfully');
               } else {
-                console.warn("User ID not found in stored user data");
-                setUser(parsedUser);
+                console.warn("[UserContext] User ID not found in stored user data");
               }
             } catch (fetchError) {
-              console.error("Failed to fetch full profile, using stored data", fetchError);
-              setUser(parsedUser);
+              // DON'T logout on profile fetch failure - just log and continue with cached data
+              console.warn("[UserContext] Failed to fetch fresh profile, using cached data:", fetchError.message);
+              // User is still authenticated with cached data
             }
           } else {
             // Token expired, clear storage
+            console.log('[UserContext] Token expired, logging out');
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             setUser(null);
             setToken(null);
             setIsAuthenticated(false);
           }
+        } else {
+          console.log('[UserContext] No stored session found');
         }
       } catch (error) {
-        console.error('Error initializing user:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-        setToken(null);
-        setIsAuthenticated(false);
+        // Only logout if there's a critical error parsing the stored data
+        // Network errors should NOT trigger logout
+        console.error('[UserContext] Critical error initializing user:', error);
+        
+        // Check if this is a JSON parse error (corrupted localStorage)
+        if (error instanceof SyntaxError) {
+          console.error('[UserContext] Corrupted session data detected, clearing storage');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+          setToken(null);
+          setIsAuthenticated(false);
+        } else {
+          // For other errors, log but don't clear session
+          console.warn('[UserContext] Non-critical error during initialization, session preserved');
+        }
       } finally {
         setLoading(false);
       }
@@ -79,9 +106,40 @@ export const UserProvider = ({ children }) => {
     return await UserApi.getUser(user.id);
   };
 
+  // Debug utility to check session status
+  const debugSession = () => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (!storedToken || !storedUser) {
+      console.log('[Session Debug] No session found');
+      return;
+    }
+    
+    try {
+      const tokenObj = JSON.parse(storedToken);
+      const userObj = JSON.parse(storedUser);
+      const now = Date.now();
+      const timeUntilExpiry = tokenObj.expiry - now;
+      const hoursUntilExpiry = (timeUntilExpiry / (1000 * 60 * 60)).toFixed(2);
+      const isExpired = now >= tokenObj.expiry;
+      
+      console.log('=== Session Debug Info ===');
+      console.log('User:', userObj.name || userObj.email);
+      console.log('Token expires in:', hoursUntilExpiry, 'hours');
+      console.log('Is expired:', isExpired);
+      console.log('Expiry date:', new Date(tokenObj.expiry).toLocaleString());
+      console.log('Current state - isAuthenticated:', isAuthenticated);
+      console.log('=========================');
+    } catch (error) {
+      console.error('[Session Debug] Error parsing session data:', error);
+    }
+  };
+
   // Login function
   const login = async (email, password, rememberMe = false) => {
     try {
+      console.log('[UserContext] Attempting login...');
       const response = await AuthApi.login({ email, password });
 
       if (response.token && response.user) {
@@ -89,6 +147,9 @@ export const UserProvider = ({ children }) => {
         const expiry = rememberMe
           ? now + 7 * 24 * 60 * 60 * 1000 // 1 week
           : now + 24 * 60 * 60 * 1000; // 24 hours
+
+        const hoursUntilExpiry = ((expiry - now) / (1000 * 60 * 60)).toFixed(2);
+        console.log(`[UserContext] Token will expire in ${hoursUntilExpiry} hours (Remember me: ${rememberMe})`);
 
         const tokenObj = {
           token: response.token,
@@ -101,10 +162,11 @@ export const UserProvider = ({ children }) => {
         // Fetch full user profile to get profile picture
         let fullUser = response.user;
         try {
-           // We need to temporarily set the token for this request if it's not yet in localStorage (it is now)
+           console.log('[UserContext] Fetching full user profile after login...');
            fullUser = await UserApi.getUser(response.user.id);
+           console.log('[UserContext] Full profile fetched successfully');
         } catch (fetchError) {
-           console.error("Failed to fetch full profile after login", fetchError);
+           console.warn("[UserContext] Failed to fetch full profile after login, using basic user data:", fetchError.message);
            // Fallback to response.user if fetch fails
         }
 
@@ -116,12 +178,14 @@ export const UserProvider = ({ children }) => {
         setToken(response.token);
         setIsAuthenticated(true);
 
+        console.log('[UserContext] Login successful');
         return { success: true, user: fullUser };
       }
 
+      console.error('[UserContext] Invalid response from server');
       return { success: false, message: 'Invalid response from server' };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[UserContext] Login error:', error);
       return { success: false, message: error.message || 'Login failed' };
     }
   };
@@ -129,11 +193,14 @@ export const UserProvider = ({ children }) => {
   // Register function
   const register = async (name, email, password) => {
     try {
+      console.log('[UserContext] Attempting registration...');
       const response = await AuthApi.register({ name, email, password });
 
       if (response.token && response.user) {
         const now = Date.now();
         const expiry = now + 24 * 60 * 60 * 1000; // 24 hours
+
+        console.log('[UserContext] Registration successful, token expires in 24 hours');
 
         const tokenObj = {
           token: response.token,
@@ -146,9 +213,11 @@ export const UserProvider = ({ children }) => {
         // Fetch full user profile to get profile picture (though new users might not have one yet, it's good for consistency)
         let fullUser = response.user;
         try {
+           console.log('[UserContext] Fetching full user profile after registration...');
            fullUser = await UserApi.getUser(response.user.id);
+           console.log('[UserContext] Full profile fetched successfully');
         } catch (fetchError) {
-           console.error("Failed to fetch full profile after registration", fetchError);
+           console.warn("[UserContext] Failed to fetch full profile after registration, using basic user data:", fetchError.message);
         }
 
         // Store full user in localStorage
@@ -162,15 +231,17 @@ export const UserProvider = ({ children }) => {
         return { success: true, user: fullUser };
       }
 
+      console.error('[UserContext] Invalid response from server');
       return { success: false, message: 'Invalid response from server' };
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('[UserContext] Registration error:', error);
       return { success: false, message: error.message || 'Registration failed' };
     }
   };
 
   // Logout function
   const logout = () => {
+    console.log('[UserContext] User logged out');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
@@ -228,6 +299,7 @@ export const UserProvider = ({ children }) => {
     refreshUser,
     isTokenValid,
     getProfile,
+    debugSession,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

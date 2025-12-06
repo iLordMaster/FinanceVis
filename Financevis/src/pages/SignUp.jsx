@@ -94,7 +94,6 @@ function SignUp() {
 
   return (
     <div className="app">
-      <Navbar />
       <div className="signup-container">
         <div className="signup-wrapper">
           <div className="signup-header">
