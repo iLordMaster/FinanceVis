@@ -239,26 +239,28 @@ const TopBar = ({ balance }) => {
                   )}
 
                   {/* Individual Accounts */}
-                  {accounts.map((account) => (
-                    <div
-                      key={account.id}
-                      className={`account-item ${
-                        selectedAccount?.id === account.id ? "active" : ""
-                      }`}
-                      onClick={() => handleAccountSelect(account)}
-                    >
-                      <div className="account-item-content">
-                        {getAccountIcon(account.type)}
-                        <div className="account-details">
-                          <span className="account-name">{account.name}</span>
-                          <span className="account-type">{account.type}</span>
+                  {[...accounts]
+                    .sort((a, b) => (b.balance || 0) - (a.balance || 0))
+                    .map((account) => (
+                      <div
+                        key={account.id}
+                        className={`account-item ${
+                          selectedAccount?.id === account.id ? "active" : ""
+                        }`}
+                        onClick={() => handleAccountSelect(account)}
+                      >
+                        <div className="account-item-content">
+                          {getAccountIcon(account.type)}
+                          <div className="account-details">
+                            <span className="account-name">{account.name}</span>
+                            <span className="account-type">{account.type}</span>
+                          </div>
                         </div>
+                        <span className="account-balance">
+                          {formatCurrency(account.balance)}
+                        </span>
                       </div>
-                      <span className="account-balance">
-                        {formatCurrency(account.balance)}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
 
                   <div className="dropdown-divider"></div>
 
