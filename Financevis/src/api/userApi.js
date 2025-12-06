@@ -17,4 +17,5 @@ export class UserApi extends Api {
       body: JSON.stringify(data),
     });
   }
+
 }

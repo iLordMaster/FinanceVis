@@ -13,7 +13,7 @@ import { UserApi } from "../../api/userApi";
 import { TransactionApi } from "../../api/transactionApi";
 import { useAccount } from "../../context/AccountContext";
 
-export default function DualLineChart() {
+export default function DualLineChart({ onDataLoaded }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("1Y");
@@ -102,6 +102,7 @@ export default function DualLineChart() {
             .map(({ rawDate, ...rest }) => rest);
 
           setData(sortedData);
+          if (onDataLoaded) onDataLoaded(sortedData);
         } else {
           // Fetch monthly data for longer ranges (6M, 1Y)
           const accountParam = selectedAccount?.id
@@ -118,14 +119,18 @@ export default function DualLineChart() {
             if (timeRange === "6M") sliceCount = 6;
             else sliceCount = 12; // 1Y
 
-            setData(response.slice(Math.max(count - sliceCount, 0)));
+            const slicedData = response.slice(Math.max(count - sliceCount, 0));
+            setData(slicedData);
+            if (onDataLoaded) onDataLoaded(slicedData);
           } else {
             setData([]);
+            if (onDataLoaded) onDataLoaded([]);
           }
         }
       } catch (error) {
         console.error("Error fetching chart data:", error);
         setData([]);
+        if (onDataLoaded) onDataLoaded([]);
       } finally {
         setLoading(false);
       }

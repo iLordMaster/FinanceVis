@@ -19,7 +19,8 @@ import { useAccount } from "../context/AccountContext";
 const Dashboard = () => {
   const { activeMonth, setActiveMonth } = useOutletContext();
   const { selectedAccount, setAccounts: setContextAccounts } = useAccount();
-  const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState([]); // New state for chart data
+  const [data, setData] = useState([]); // Keep for now if needed, or remove if unused. Let's redirect usage.
   const [loading, setLoading] = useState(true);
   const [accounts, setAccounts] = useState([]);
   const [assets, setAssets] = useState([]);
@@ -31,22 +32,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Build query params based on selected account
-        const accountParam = selectedAccount?.id
-          ? `?accountId=${selectedAccount.id}`
-          : "";
+        /* REMOVED: unused accountParam */
 
-        // Fetch monthly stats (filtered by account if selected)
-        const dataJson = await UserApi.request(
-          `/api/dashboard/monthly-stats${accountParam}`
-        );
-
-        if (Array.isArray(dataJson)) {
-          setData(dataJson);
-        } else {
-          console.error("Expected array from monthly-stats but got:", dataJson);
-          setData([]);
-        }
+        /* REMOVED: Redundant monthly-stats fetch. Data now comes from DualLineChart via onDataLoaded */
 
         // Fetch accounts (always show all accounts for net worth calculation)
         const accountsData = await UserApi.request(
@@ -114,9 +102,13 @@ const Dashboard = () => {
   }, [selectedAccount, setContextAccounts]);
 
   const maxIncome =
-    data.length > 0 ? Math.max(...data.map((item) => item.income)) : 0;
+    chartData.length > 0
+      ? Math.max(...chartData.map((item) => item.income))
+      : 0;
   const maxExpenses =
-    data.length > 0 ? Math.max(...data.map((item) => item.expenses)) : 0;
+    chartData.length > 0
+      ? Math.max(...chartData.map((item) => item.expenses))
+      : 0;
 
   // Calculate total account balance (sum of all accounts or just selected)
   const totalAccountBalance = selectedAccount
@@ -306,7 +298,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <DualLineChart />
+        <DualLineChart onDataLoaded={setChartData} />
       </DashboardCard>
 
       {/* Misc (Dog) */}

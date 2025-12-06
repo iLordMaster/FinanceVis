@@ -1,4 +1,4 @@
-class GetUserProfile {
+class DeleteProfilePicture {
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
@@ -8,8 +8,10 @@ class GetUserProfile {
     if (!user) {
       throw new Error("User not found");
     }
+    user.profilePicture = null;
+    await this.userRepository.update(user.id, { profilePicture: null });
     return user;
   }
 }
 
-module.exports = GetUserProfile;
+module.exports = DeleteProfilePicture;

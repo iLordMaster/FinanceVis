@@ -5,7 +5,6 @@ class User {
     this.email = email;
     this.passwordHash = passwordHash;
     this.profilePicture = profilePicture;
-    this.incomeGoal = incomeGoal || 0;
     this.createdAt = createdAt || new Date();
   }
 }

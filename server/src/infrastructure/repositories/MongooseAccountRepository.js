@@ -1,6 +1,6 @@
-const AccountRepository = require('../../domain/repositories/AccountRepository');
-const AccountModel = require('../database/models/AccountModel');
-const Account = require('../../domain/entities/Account');
+const AccountRepository = require("../../domain/repositories/AccountRepository");
+const AccountModel = require("../database/models/AccountModel");
+const Account = require("../../domain/entities/Account");
 
 class MongooseAccountRepository extends AccountRepository {
   async create(account) {
@@ -9,13 +9,16 @@ class MongooseAccountRepository extends AccountRepository {
       name: account.name,
       balance: account.balance,
       currency: account.currency,
+      incomeGoal: account.incomeGoal || 0,
     });
     const savedAccount = await newAccount.save();
     return this._toEntity(savedAccount);
   }
 
   async findByUserId(userId) {
-    const accounts = await AccountModel.find({ userId }).sort({ createdAt: -1 });
+    const accounts = await AccountModel.find({ userId }).sort({
+      createdAt: -1,
+    });
     return accounts.map(this._toEntity);
   }
 
@@ -26,7 +29,9 @@ class MongooseAccountRepository extends AccountRepository {
   }
 
   async update(id, updates) {
-    const account = await AccountModel.findByIdAndUpdate(id, updates, { new: true });
+    const account = await AccountModel.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
     if (!account) return null;
     return this._toEntity(account);
   }
@@ -52,6 +57,7 @@ class MongooseAccountRepository extends AccountRepository {
       name: mongoAccount.name,
       balance: mongoAccount.balance,
       currency: mongoAccount.currency,
+      incomeGoal: mongoAccount.incomeGoal,
       createdAt: mongoAccount.createdAt,
     });
   }

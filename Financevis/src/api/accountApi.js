@@ -1,28 +1,37 @@
-import api from "./api";
+import Api from "./api";
 
-export const AccountApi = {
-  async getAccounts() {
-    const response = await api.get("/accounts");
-    return response.data;
-  },
+export class AccountApi extends Api {
+  static api_url = Api.api_url + "/accounts";
 
-  async getAccount(id) {
-    const response = await api.get(`/accounts/${id}`);
-    return response.data;
-  },
+  static async getAccounts() {
+    return this.request(this.api_url, {
+      method: "GET",
+    });
+  }
 
-  async createAccount(accountData) {
-    const response = await api.post("/accounts", accountData);
-    return response.data;
-  },
+  static async getAccount(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "GET",
+    });
+  }
 
-  async updateAccount(id, updates) {
-    const response = await api.put(`/accounts/${id}`, updates);
-    return response.data;
-  },
+  static async createAccount(accountData) {
+    return this.request(this.api_url, {
+      method: "POST",
+      body: JSON.stringify(accountData),
+    });
+  }
 
-  async deleteAccount(id) {
-    const response = await api.delete(`/accounts/${id}`);
-    return response.data;
-  },
-};
+  static async updateAccount(id, updates) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    });
+  }
+
+  static async deleteAccount(id) {
+    return this.request(`${this.api_url}/${id}`, {
+      method: "DELETE",
+    });
+  }
+}

@@ -72,12 +72,10 @@ class DashboardController {
       res.json(activity);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .json({
-          message: "Error fetching recent activity",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: "Error fetching recent activity",
+        error: err.message,
+      });
     }
   }
 
@@ -89,12 +87,10 @@ class DashboardController {
       res.json(summary);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .json({
-          message: "Error fetching account summary",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: `Error fetching account summary: ${err.message}`,
+        error: err.message,
+      });
     }
   }
 
@@ -156,12 +152,10 @@ class DashboardController {
       res.json(stats);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .json({
-          message: "Error fetching all monthly stats",
-          error: err.message,
-        });
+      res.status(500).json({
+        message: "Error fetching all monthly stats",
+        error: err.message,
+      });
     }
   }
 }
