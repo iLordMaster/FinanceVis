@@ -3,7 +3,7 @@ import DashboardCard from "../components/dashboard/DashboardCard";
 import AddIncomeModal from "../components/AddIncomeModal";
 import { TransactionApi } from "../api/transactionApi";
 import { FaDollarSign, FaTags, FaClock, FaPlus } from "react-icons/fa";
-import "./dashboard.css"; // Reuse dashboard styles
+import "./Dashboard.css"; // Reuse dashboard styles
 
 const Home = () => {
   const [entries, setEntries] = useState([]);
@@ -18,7 +18,7 @@ const Home = () => {
       setError("");
 
       // Fetch income transactions
-      const response = await TransactionApi.getTransactions({ type: 'INCOME' });
+      const response = await TransactionApi.getTransactions({ type: "INCOME" });
       setEntries(response.transactions || []);
     } catch (err) {
       setError(err.message || "Failed to fetch entries");
@@ -37,8 +37,13 @@ const Home = () => {
   };
 
   // Calculations
-  const totalIncome = entries.reduce((sum, entry) => sum + (entry.amount || 0), 0);
-  const uniqueCategories = [...new Set(entries.map((entry) => entry.categoryId?._id).filter(Boolean))];
+  const totalIncome = entries.reduce(
+    (sum, entry) => sum + (entry.amount || 0),
+    0
+  );
+  const uniqueCategories = [
+    ...new Set(entries.map((entry) => entry.categoryId?._id).filter(Boolean)),
+  ];
 
   let latestEntry = null;
   if (entries.length > 0) {
@@ -53,11 +58,14 @@ const Home = () => {
       {/* Welcome / Action Card */}
       <DashboardCard className="card-welcome" style={{ gridColumn: "span 2" }}>
         <div style={{ padding: "10px" }}>
-          <h2 style={{ fontSize: "1.8rem", marginBottom: "10px", color: "#fff" }}>
+          <h2
+            style={{ fontSize: "1.8rem", marginBottom: "10px", color: "#fff" }}
+          >
             Take Control of Your Financial Future
           </h2>
           <p style={{ color: "#8a8d98", marginBottom: "20px" }}>
-            Visualize your income streams, track your earnings, and make informed decisions.
+            Visualize your income streams, track your earnings, and make
+            informed decisions.
           </p>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -112,7 +120,11 @@ const Home = () => {
       </DashboardCard>
 
       {/* Latest Entry */}
-      <DashboardCard title="Latest Entry" className="card-notifications" style={{ gridColumn: "span 2" }}>
+      <DashboardCard
+        title="Latest Entry"
+        className="card-notifications"
+        style={{ gridColumn: "span 2" }}
+      >
         {loading ? (
           <div>Loading...</div>
         ) : latestEntry ? (
@@ -140,7 +152,7 @@ const Home = () => {
               </div>
               <div>
                 <div style={{ fontWeight: "bold", fontSize: "1.1rem" }}>
-                  {latestEntry.categoryId?.name || 'Uncategorized'}
+                  {latestEntry.categoryId?.name || "Uncategorized"}
                 </div>
                 <div style={{ color: "#8a8d98", fontSize: "0.9rem" }}>
                   {new Date(latestEntry.date).toLocaleDateString("en-US", {
@@ -152,7 +164,13 @@ const Home = () => {
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#4ade80" }}>
+              <div
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  color: "#4ade80",
+                }}
+              >
                 +${latestEntry.amount.toFixed(2)}
               </div>
               {latestEntry.description && (
@@ -163,7 +181,9 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          <div style={{ color: "#8a8d98", fontStyle: "italic" }}>No entries yet</div>
+          <div style={{ color: "#8a8d98", fontStyle: "italic" }}>
+            No entries yet
+          </div>
         )}
       </DashboardCard>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import DashboardCard from '../components/dashboard/DashboardCard';
 import ChartPlaceholder from '../components/dashboard/ChartPlaceholder';
-import './dashboard.css';
+import './Dashboard.css';
 import { FaDog } from 'react-icons/fa';
 import DualLineChart from '../components/dashboard/DualLineChart';
 import { UserApi } from '../api/userApi';

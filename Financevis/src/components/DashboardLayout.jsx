@@ -4,7 +4,7 @@ import Sidebar from "./dashboard/Sidebar";
 import TopBar from "./dashboard/TopBar";
 import { UserApi } from "../api/userApi";
 import { useAccount } from "../context/AccountContext";
-import "../pages/dashboard.css";
+import "../pages/Dashboard.css";
 
 const DashboardLayout = () => {
   const currentMonth = new Date().getMonth();
