@@ -32,7 +32,12 @@ class MongooseTransactionRepository extends TransactionRepository {
     }
     if (filters.type) query.type = filters.type;
     if (filters.categoryId) query.categoryId = filters.categoryId;
-    if (filters.accountId) query.accountId = filters.accountId;
+    if (
+      filters.accountId &&
+      filters.accountId !== "null" &&
+      filters.accountId !== "undefined"
+    )
+      query.accountId = filters.accountId;
 
     const transactions = await TransactionModel.find(query)
       .populate("categoryId accountId")
@@ -72,7 +77,7 @@ class MongooseTransactionRepository extends TransactionRepository {
     };
 
     // Add accountId filter if provided
-    if (accountId) {
+    if (accountId && accountId !== "null" && accountId !== "undefined") {
       matchQuery.accountId = new mongoose.Types.ObjectId(accountId);
     }
 
@@ -150,7 +155,7 @@ class MongooseTransactionRepository extends TransactionRepository {
     };
 
     // Add accountId filter if provided
-    if (accountId) {
+    if (accountId && accountId !== "null" && accountId !== "undefined") {
       matchQuery.accountId = new mongoose.Types.ObjectId(accountId);
     }
 
@@ -212,7 +217,7 @@ class MongooseTransactionRepository extends TransactionRepository {
     };
 
     // Add accountId filter if provided
-    if (accountId) {
+    if (accountId && accountId !== "null" && accountId !== "undefined") {
       matchQuery.accountId = new mongoose.Types.ObjectId(accountId);
     }
 
@@ -266,7 +271,7 @@ class MongooseTransactionRepository extends TransactionRepository {
     }
 
     // Add accountId filter if provided
-    if (accountId) {
+    if (accountId && accountId !== "null" && accountId !== "undefined") {
       query.accountId = new mongoose.Types.ObjectId(accountId);
     }
 

@@ -1,9 +1,9 @@
-import { TransactionApi } from '../api/transactionApi';
-import { CategoryApi } from '../api/categoryApi';
-import { AccountApi } from '../api/accountApi';
-import { BudgetApi } from '../api/budgetApi';
-import { AssetApi } from '../api/assetApi';
-import { UserApi } from '../api/userApi';
+import { TransactionApi } from "../api/transactionApi";
+import { CategoryApi } from "../api/categoryApi";
+import { AccountApi } from "../api/accountApi";
+import { BudgetApi } from "../api/budgetApi";
+import { AssetApi } from "../api/assetApi";
+import { UserApi } from "../api/userApi";
 
 /**
  * DashboardService - Aggregates data from multiple APIs for dashboard display
@@ -23,7 +23,7 @@ export class DashboardService {
         balance: summary.balance || 0,
       };
     } catch (error) {
-      console.error('Error fetching totals:', error);
+      console.error("Error fetching totals:", error);
       throw error;
     }
   }
@@ -37,17 +37,26 @@ export class DashboardService {
    */
   static async getMonthlyIncomeVsExpenses(params = {}) {
     try {
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v != null && v !== "null")
+      );
       const [incomeData, expenseData] = await Promise.all([
-        TransactionApi.getTransactions({ ...params, type: 'INCOME' }),
-        TransactionApi.getTransactions({ ...params, type: 'EXPENSE' }),
+        TransactionApi.getTransactions({ ...cleanParams, type: "INCOME" }),
+        TransactionApi.getTransactions({ ...cleanParams, type: "EXPENSE" }),
       ]);
 
-      const income = incomeData.transactions.reduce((sum, t) => sum + t.amount, 0);
-      const expenses = expenseData.transactions.reduce((sum, t) => sum + t.amount, 0);
+      const income = incomeData.transactions.reduce(
+        (sum, t) => sum + t.amount,
+        0
+      );
+      const expenses = expenseData.transactions.reduce(
+        (sum, t) => sum + t.amount,
+        0
+      );
 
       return { income, expenses };
     } catch (error) {
-      console.error('Error fetching monthly income vs expenses:', error);
+      console.error("Error fetching monthly income vs expenses:", error);
       throw error;
     }
   }
@@ -58,12 +67,18 @@ export class DashboardService {
    * @param {Object} params - Query parameters for filtering
    * @returns {Promise<Array<{categoryId: string, categoryName: string, total: number, count: number}>>}
    */
-  static async getTopCategories(type = 'EXPENSE', params = {}) {
+  static async getTopCategories(type = "EXPENSE", params = {}) {
     try {
-      const response = await TransactionApi.getByCategory({ ...params, type });
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v != null && v !== "null")
+      );
+      const response = await TransactionApi.getByCategory({
+        ...cleanParams,
+        type,
+      });
       return response.data || [];
     } catch (error) {
-      console.error('Error fetching top categories:', error);
+      console.error("Error fetching top categories:", error);
       throw error;
     }
   }
@@ -78,7 +93,7 @@ export class DashboardService {
       const response = await TransactionApi.getTransactions();
       return response.transactions.slice(0, limit);
     } catch (error) {
-      console.error('Error fetching recent activity:', error);
+      console.error("Error fetching recent activity:", error);
       throw error;
     }
   }
@@ -95,7 +110,7 @@ export class DashboardService {
         totalBalance: response.totalBalance || 0,
       };
     } catch (error) {
-      console.error('Error fetching account summary:', error);
+      console.error("Error fetching account summary:", error);
       throw error;
     }
   }
@@ -126,7 +141,7 @@ export class DashboardService {
           try {
             const transactionResponse = await TransactionApi.getTransactions({
               categoryId: budget.categoryId._id,
-              type: 'EXPENSE',
+              type: "EXPENSE",
               startDate,
               endDate,
             });
@@ -136,7 +151,8 @@ export class DashboardService {
               0
             );
 
-            const progress = budget.amount > 0 ? (spent / budget.amount) * 100 : 0;
+            const progress =
+              budget.amount > 0 ? (spent / budget.amount) * 100 : 0;
 
             return {
               budget,
@@ -145,7 +161,10 @@ export class DashboardService {
               remaining: Math.max(budget.amount - spent, 0),
             };
           } catch (error) {
-            console.error(`Error fetching transactions for budget ${budget._id}:`, error);
+            console.error(
+              `Error fetching transactions for budget ${budget._id}:`,
+              error
+            );
             return {
               budget,
               spent: 0,
@@ -158,7 +177,7 @@ export class DashboardService {
 
       return budgetProgress;
     } catch (error) {
-      console.error('Error fetching budget summary:', error);
+      console.error("Error fetching budget summary:", error);
       throw error;
     }
   }
@@ -175,7 +194,7 @@ export class DashboardService {
         totalValue: response.totalValue || 0,
       };
     } catch (error) {
-      console.error('Error fetching asset summary:', error);
+      console.error("Error fetching asset summary:", error);
       throw error;
     }
   }
@@ -199,8 +218,8 @@ export class DashboardService {
       ] = await Promise.all([
         this.getTotals(),
         this.getMonthlyIncomeVsExpenses(params),
-        this.getTopCategories('EXPENSE', params),
-        this.getTopCategories('INCOME', params),
+        this.getTopCategories("EXPENSE", params),
+        this.getTopCategories("INCOME", params),
         this.getRecentActivity(10),
         this.getAccountSummary(),
         this.getBudgetSummary(params),
@@ -218,7 +237,7 @@ export class DashboardService {
         assetSummary,
       };
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error("Error fetching dashboard data:", error);
       throw error;
     }
   }
