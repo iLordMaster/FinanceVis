@@ -280,6 +280,31 @@ const TopBar = ({ balance }) => {
         </div>
       </div>
 
+      {/* Bottom Navigation for Mobile */}
+      <div className="bottom-nav">
+        <div
+          className={`bottom-nav-item ${activeTabIndex === 0 ? "active" : ""}`}
+          onClick={handleDashboardClick}
+        >
+          <FaChartLine className="bottom-nav-icon" />
+          <span>Dashboard</span>
+        </div>
+        <div
+          className={`bottom-nav-item ${activeTabIndex === 1 ? "active" : ""}`}
+          onClick={handleHomeClick}
+        >
+          <FaHome className="bottom-nav-icon" />
+          <span>Overview</span>
+        </div>
+        <div
+          className={`bottom-nav-item ${activeTabIndex === 2 ? "active" : ""}`}
+          onClick={() => navigate("/pricing")}
+        >
+          <FaDollarSign className="bottom-nav-icon" />
+          <span>Pricing</span>
+        </div>
+      </div>
+
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}

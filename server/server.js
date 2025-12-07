@@ -11,10 +11,10 @@ app.use(morgan("dev"));
 
 // Proper CORS configuration
 app.use(
-	cors({
-		origin: "*",
-		credentials: true,
-	})
+  cors({
+    origin: "*",
+    credentials: true,
+  })
 );
 
 // Parse JSON
@@ -22,6 +22,22 @@ app.use(express.json());
 
 // Connect to MongoDB
 connectDB();
+
+// Schedule recurring transactions job
+const cron = require("node-cron");
+const processRecurringTransactions = require("./src/jobs/processRecurringTransactions");
+
+// Run every day at midnight (0 0 * * *)
+cron.schedule("0 0 * * *", async () => {
+  console.log("[CRON] Running recurring transactions job...");
+  try {
+    await processRecurringTransactions.execute();
+  } catch (error) {
+    console.error("[CRON] Recurring transactions job failed:", error);
+  }
+});
+
+console.log("[CRON] Recurring transactions job scheduled for midnight daily");
 
 // Routes
 const authRoutes = require("./src/presentation/routes/authRoutes"); // New Auth Routes
@@ -33,6 +49,7 @@ const budgetRoutes = require("./src/presentation/routes/budgetRoutes"); // New B
 const assetRoutes = require("./src/presentation/routes/assetRoutes"); // New Asset Routes
 const notificationRoutes = require("./src/presentation/routes/notificationRoutes"); // New Notification Routes
 const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes"); // New Dashboard Routes
+const recurringTransactionRoutes = require("./src/presentation/routes/recurringTransactionRoutes"); // New Recurring Transaction Routes
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -43,9 +60,10 @@ app.use("/api/budgets", budgetRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/recurring-transactions", recurringTransactionRoutes);
 
 app.get("/", (req, res) => {
-	res.send("Server running");
+  res.send("Server running");
 });
 
 const PORT = process.env.PORT || 5001;

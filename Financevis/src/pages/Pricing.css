@@ -52,7 +52,11 @@
 
 .pricing-card.highlighted {
   border: 2px solid #f97316;
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(219, 39, 119, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.05) 0%,
+    rgba(219, 39, 119, 0.05) 100%
+  );
 }
 
 .popular-badge {
@@ -196,19 +200,31 @@
 /* Responsive */
 @media (max-width: 768px) {
   .pricing-content {
-    padding: 20px;
+    padding: 10px 0;
+    overflow-x: hidden;
   }
 
   .pricing-title {
     font-size: 2rem;
+    padding: 0 10px;
   }
 
   .pricing-subtitle {
     font-size: 1rem;
+    padding: 0 10px;
   }
 
   .pricing-grid {
     grid-template-columns: 1fr;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .pricing-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 20px;
   }
 }
-

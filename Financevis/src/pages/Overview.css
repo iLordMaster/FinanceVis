@@ -339,6 +339,7 @@
   .overview-lower {
     grid-template-columns: 1fr;
     gap: 20px;
+    margin-bottom: 60px;
   }
   
   .balance-amount {

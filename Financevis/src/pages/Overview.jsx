@@ -19,6 +19,7 @@ import {
   FaLightbulb,
 } from "react-icons/fa";
 import PaywallModal from "../components/PaywallModal";
+import ManageRecurringIncomeModal from "../components/ManageRecurringIncomeModal";
 import "./Overview.css";
 
 const Overview = () => {
@@ -35,6 +36,8 @@ const Overview = () => {
   const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+  const [isRecurringIncomeModalOpen, setIsRecurringIncomeModalOpen] =
+    useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchData = useCallback(async () => {
@@ -239,12 +242,17 @@ const Overview = () => {
           icon={<FaPiggyBank />}
           gradient="savings"
         />
-        <MetricCard
-          title="Income Streams"
-          value={metrics.incomeStreams}
-          icon={<FaStream />}
-          gradient="streams"
-        />
+        <div
+          onClick={() => setIsRecurringIncomeModalOpen(true)}
+          style={{ cursor: "pointer" }}
+        >
+          <MetricCard
+            title="Income Streams"
+            value={metrics.incomeStreams}
+            icon={<FaStream />}
+            gradient="streams"
+          />
+        </div>
       </div>
 
       {/* Middle Section - Recent Activity & Quick Actions */}
@@ -389,6 +397,10 @@ const Overview = () => {
       <PaywallModal
         isOpen={isPaywallOpen}
         onClose={() => setIsPaywallOpen(false)}
+      />
+      <ManageRecurringIncomeModal
+        isOpen={isRecurringIncomeModalOpen}
+        onClose={() => setIsRecurringIncomeModalOpen(false)}
       />
     </div>
   );

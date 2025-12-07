@@ -491,7 +491,8 @@
   }
   .main-content {
     margin-left: 0;
-    padding-top: 20px;
+    padding: 20px 15px 90px 15px;
+    overflow-x: hidden;
   }
   .month-list {
     flex-direction: row;
@@ -499,6 +500,7 @@
   }
   .dashboard-grid {
     grid-template-columns: 1fr;
+    margin-bottom: 60px;
   }
   .card-net-worth,
   .card-spendings,
@@ -724,4 +726,119 @@
 
 .chart-time-option:focus {
   outline: none;
+}
+
+/* Bottom Bar Navigation */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .top-bar .nav-tabs {
+    display: none;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(24, 24, 27, 0.95);
+    border-top: 1px solid #27272a;
+    padding: 12px 0;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom, 15px);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #71717a;
+    font-size: 0.7rem;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    font-weight: 500;
+  }
+
+  .bottom-nav-item:active {
+    transform: scale(0.95);
+  }
+
+  .bottom-nav-item.active {
+    color: #818cf8; /* Light Indigo */
+  }
+
+  /* Active Indicator Dot */
+  .bottom-nav-item.active::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 24px;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.5);
+  }
+
+  .bottom-nav-icon {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+    transition: color 0.2s;
+  }
+
+  .main-content {
+    padding-bottom: 90px;
+  }
+
+  /* Hide sidebar on mobile if it overlays */
+  .sidebar {
+    display: none;
+  }
+
+  /* Adjust app title spacing */
+  .app-title {
+    margin-left: 0;
+  }
+
+  .top-bar {
+    padding: 15px 20px;
+    margin-left: 0;
+    left: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Mobile Header Refinements */
+  .app-title span:first-child {
+    display: none;
+  }
+  .app-title h1 {
+    font-size: 1rem;
+    margin: 0;
+  }
+  .top-balance-amount {
+    font-size: 1.8rem;
+    margin-top: 2px;
+  }
+  .date-selector,
+  .user-info {
+    display: none;
+  }
+  .user-profile {
+    gap: 0;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
 }
