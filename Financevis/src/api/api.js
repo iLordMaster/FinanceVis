@@ -35,6 +35,8 @@ export default class Api {
     const config = {
       ...options,
       headers,
+      mode: "cors",
+      credentials: "include",
     };
 
     // Wrap the fetch call for retry logic
