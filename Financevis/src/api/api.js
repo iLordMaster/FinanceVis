@@ -1,5 +1,5 @@
 export default class Api {
-  static API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  static API_BASE_URL = "https://financevis-backend.trinibuy.co.uk";
   static api_url = this.API_BASE_URL + "/api";
 
   static async request(endpoint, options = {}) {
