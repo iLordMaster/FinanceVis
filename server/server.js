@@ -12,7 +12,7 @@ app.use(morgan("dev"));
 // Proper CORS configuration
 app.use(
   cors({
-    origin: "https://financevis.trinibuy.co.uk/",
+    origin: "https://financevis.trinibuy.co.uk",
     credentials: true,
   })
 );
