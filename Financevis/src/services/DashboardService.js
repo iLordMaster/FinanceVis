@@ -133,8 +133,11 @@ export class DashboardService {
       const budgets = budgetResponse.budgets || [];
 
       // Get transactions for the same period to calculate spending
-      const startDate = new Date(year, month - 1, 1).toISOString();
-      const endDate = new Date(year, month, 0, 23, 59, 59).toISOString();
+      // Use UTC dates to avoid timezone interactions
+      const startDate = new Date(Date.UTC(year, month - 1, 1)).toISOString();
+      const endDate = new Date(
+        Date.UTC(year, month, 0, 23, 59, 59, 999)
+      ).toISOString();
 
       const budgetProgress = await Promise.all(
         budgets.map(async (budget) => {

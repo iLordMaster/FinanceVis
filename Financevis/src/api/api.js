@@ -1,6 +1,8 @@
 export default class Api {
   static API_BASE_URL = "https://financevis-backend.trinibuy.co.uk";
-  static api_url = this.API_BASE_URL + "/api";
+  static get api_url() {
+    return this.API_BASE_URL + "/api";
+  }
 
   static async request(endpoint, options = {}) {
     console.log("[UserApi] Making request to:", endpoint);

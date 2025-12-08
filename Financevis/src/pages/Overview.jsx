@@ -3,6 +3,7 @@ import { useUser } from "../context/UserContext";
 import { TransactionApi } from "../api/transactionApi";
 import { CategoryApi } from "../api/categoryApi";
 import { UserApi } from "../api/userApi";
+import { DashboardService } from "../services/DashboardService";
 import MetricCard from "../components/MetricCard";
 import DashboardCard from "../components/dashboard/DashboardCard";
 import RecentActivityList from "../components/RecentActivityList";
@@ -46,7 +47,10 @@ const Overview = () => {
 
       // Fetch YTD transactions for metrics
       const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 1).toISOString();
+      // Use UTC to ensure we get the full year regardless of timezone
+      const startOfYear = new Date(
+        Date.UTC(now.getFullYear(), 0, 1)
+      ).toISOString();
       const endOfToday = new Date().toISOString();
 
       const [
@@ -67,8 +71,10 @@ const Overview = () => {
           startDate: startOfYear,
           endDate: endOfToday,
         }),
-        UserApi.request("/api/dashboard/account-summary"),
-        UserApi.request("/api/dashboard/monthly-stats"),
+        // Use DashboardService for account summary
+        DashboardService.getAccountSummary().then((res) => res.accounts),
+        // Use API_BASE_URL to construct the full URL for dashboard stats
+        UserApi.request(`${UserApi.API_BASE_URL}/api/dashboard/monthly-stats`),
         CategoryApi.getCategories("INCOME"),
         CategoryApi.getCategories("EXPENSE"),
       ]);
