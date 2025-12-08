@@ -3,6 +3,8 @@ export default class Api {
   static api_url = this.API_BASE_URL + "/api";
 
   static async request(endpoint, options = {}) {
+    console.log("[UserApi] Making request to:", endpoint);
+    console.log("[UserApi] Api Url:", this.api_url);
     const tokenStr = localStorage.getItem("token");
     let token = null;
     if (tokenStr) {
