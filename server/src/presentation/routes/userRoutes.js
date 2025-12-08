@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../../../middleware/authMiddleware");
-const { upload } = require("../../../config/cloudinaryConfig");
+const { singleUploadToCloudinary } = require("../../../config/cloudinaryConfig");
 
 // Dependencies
 const MongooseUserRepository = require("../../infrastructure/repositories/MongooseUserRepository");
@@ -36,7 +36,7 @@ router.put("/:id/profile", authMiddleware, (req, res) =>
 router.post(
   "/:id/profile-picture",
   authMiddleware,
-  upload.single("profilePicture"),
+  ...singleUploadToCloudinary("profilePicture"),
   (req, res) => userController.uploadPicture(req, res)
 );
 router.delete("/:id/profile-picture", authMiddleware, (req, res) =>
