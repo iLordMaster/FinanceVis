@@ -10,6 +10,6 @@ RUN npm i -g pm2
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5001
 
-CMD [ "npm", "start" ]
+CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]
