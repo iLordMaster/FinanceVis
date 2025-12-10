@@ -77,4 +77,6 @@ app.use((req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => logger.info(`Server started on port ${PORT}`));
+app.listen(PORT, () => {
+  logger.info("Server started", { port: PORT });
+});
