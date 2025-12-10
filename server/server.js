@@ -45,6 +45,7 @@ const assetRoutes = require("./src/presentation/routes/assetRoutes"); // New Ass
 const notificationRoutes = require("./src/presentation/routes/notificationRoutes"); // New Notification Routes
 const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes"); // New Dashboard Routes
 const recurringTransactionRoutes = require("./src/presentation/routes/recurringTransactionRoutes"); // New Recurring Transaction Routes
+const metricsRoutes = require("./src/presentation/routes/metricsRoute"); // New Metrics Routes
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -56,6 +57,7 @@ app.use("/api/assets", assetRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/recurring-transactions", recurringTransactionRoutes);
+app.use("/metrics", metricsRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server running");
