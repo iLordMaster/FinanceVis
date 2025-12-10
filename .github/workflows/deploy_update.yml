@@ -23,6 +23,7 @@ jobs:
             set -e
             cd /home/azureuser/FinanceVis
             git pull
+            cd /home/azureuser/FinanceVis/server
             docker compose down
             docker compose up -d --build
           debug: true
