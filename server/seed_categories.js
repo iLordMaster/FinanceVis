@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const CategoryModel = require('./src/infrastructure/database/models/CategoryModel');
-require('dotenv').config();
+const mongoose = require("mongoose");
+const CategoryModel = require("./src/infrastructure/database/models/CategoryModel");
+require("dotenv").config();
 
 const defaultCategories = [
   // Income
@@ -24,20 +24,20 @@ const defaultCategories = [
 const seedCategories = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
 
     // Check if categories exist
     const count = await CategoryModel.countDocuments();
     if (count > 0) {
-      console.log('Categories already exist. Skipping seed.');
+      console.log("Categories already exist. Skipping seed.");
     } else {
       await CategoryModel.insertMany(defaultCategories);
-      console.log('Categories seeded successfully');
+      console.log("Categories seeded successfully");
     }
 
     process.exit(0);
   } catch (error) {
-    console.error('Error seeding categories:', error);
+    console.error("Error seeding categories:", error);
     process.exit(1);
   }
 };

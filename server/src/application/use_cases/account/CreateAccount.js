@@ -1,4 +1,4 @@
-const Account = require('../../../domain/entities/Account');
+const Account = require("../../../domain/entities/Account");
 
 class CreateAccount {
   constructor(accountRepository) {
@@ -6,20 +6,25 @@ class CreateAccount {
   }
 
   async execute(accountData) {
-    const { userId, name, balance, currency } = accountData;
+    try {
+      const { userId, name, balance, currency } = accountData;
 
-    if (!name) {
-      throw new Error('name is required');
+      if (!name) {
+        throw new Error("name is required");
+      }
+
+      const account = new Account({
+        userId,
+        name,
+        balance,
+        currency,
+      });
+
+      return await this.accountRepository.create(account);
+    } catch (error) {
+      logger.error("Error creating account:", error);
+      throw new Error(error.message);
     }
-
-    const account = new Account({
-      userId,
-      name,
-      balance,
-      currency,
-    });
-
-    return await this.accountRepository.create(account);
   }
 }
 

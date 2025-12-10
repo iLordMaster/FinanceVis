@@ -4,15 +4,19 @@ class UpdateAccount {
   }
 
   async execute(id, userId, updates) {
-    const account = await this.accountRepository.findById(id);
-    if (!account) {
-      throw new Error('Account not found');
+    try {
+      const account = await this.accountRepository.findById(id);
+      if (!account) {
+        throw new Error("Account not found");
+      }
+      if (account.userId !== userId) {
+        throw new Error("Unauthorized");
+      }
+      return await this.accountRepository.update(id, updates);
+    } catch (error) {
+      logger.error("Error updating account:", error);
+      throw new Error(error.message);
     }
-    if (account.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
-
-    return await this.accountRepository.update(id, updates);
   }
 }
 

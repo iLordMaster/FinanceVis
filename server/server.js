@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./src/infrastructure/database/mongoose");
-
+const logger = require("./config/logger");
 require("dotenv").config();
 const morgan = require("morgan");
-const client = require("prom-client"); 
+const client = require("prom-client");
 
 const app = express();
 
@@ -29,15 +29,15 @@ const processRecurringTransactions = require("./src/jobs/processRecurringTransac
 
 // Run every day at midnight (0 0 * * *)
 cron.schedule("0 0 * * *", async () => {
-  console.log("[CRON] Running recurring transactions job...");
+  logger.info("[CRON] Running recurring transactions job...");
   try {
     await processRecurringTransactions.execute();
   } catch (error) {
-    console.error("[CRON] Recurring transactions job failed:", error);
+    logger.error("[CRON] Recurring transactions job failed:", error);
   }
 });
 
-console.log("[CRON] Recurring transactions job scheduled for midnight daily");
+logger.info("[CRON] Recurring transactions job scheduled for midnight daily");
 
 // Routes
 const authRoutes = require("./src/presentation/routes/authRoutes"); // New Auth Routes
@@ -72,10 +72,9 @@ app.get("/metrics", async (_, res) => {
   res.end(await client.register.metrics());
 });
 
-
 app.use((req, res, next) => {
   res.status(404).json({ error: "Not Found" });
 });
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => logger.info(`Server started on port ${PORT}`));
