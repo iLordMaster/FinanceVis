@@ -3,8 +3,12 @@ const cors = require("cors");
 const connectDB = require("./src/infrastructure/database/mongoose"); // Updated path
 require("dotenv").config();
 const morgan = require("morgan");
+const client = require("prom-client"); 
 
 const app = express();
+
+// Collect default Node.js metrics
+client.collectDefaultMetrics();
 
 // Morgan logging
 app.use(morgan("dev"));
@@ -62,6 +66,13 @@ app.use("/metrics", metricsRoutes);
 app.get("/", (req, res) => {
   res.send("Server running");
 });
+
+// Metrics endpoint
+app.get("/metrics", async (_, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
+});
+
 
 app.use((req, res, next) => {
   res.status(404).json({ error: "Not Found" });
