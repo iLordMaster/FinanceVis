@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   server:
     build: .
@@ -43,6 +41,10 @@ services:
     depends_on:
       - loki
       - prometheus
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+    env_file:
+      - .env
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data:
