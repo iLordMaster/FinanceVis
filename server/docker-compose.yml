@@ -16,21 +16,33 @@ services:
         loki-external-labels: service=financevis,env=prod
 
   loki:
-    image: grafana/loki:main-93bca4c
+    image: grafana/loki:2.9.4
     container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
     restart: always
 
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    restart: always
+
   grafana:
-    image: grafana/grafana:main-ubuntu
+    image: grafana/grafana:10.4.3
     container_name: grafana
     ports:
       - "3000:3000"
     restart: always
     depends_on:
       - loki
+      - prometheus
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
