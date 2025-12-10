@@ -19,11 +19,10 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: azureuser
           key: ${{ secrets.VM_SSH_KEY }}
-          key_path: /tmp/azure_key
           script: |
             set -e
             cd /home/azureuser/FinanceVis
             git pull
-            cd Financevis
-            /home/azureuser/.nvm/versions/node/v22.21.1/bin/pm2 reload 8
+            docker compose down
+            docker compose up -d --build
           debug: true
