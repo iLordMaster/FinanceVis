@@ -10,12 +10,7 @@ const app = express();
 app.use(morgan("dev"));
 
 // Proper CORS configuration
-app.use(
-  cors({
-    origin: "https://financevis.trinibuy.co.uk",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 // Parse JSON
 app.use(express.json());
