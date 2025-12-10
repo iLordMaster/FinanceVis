@@ -10,12 +10,16 @@ const app = express();
 app.use(morgan("dev"));
 
 // Proper CORS configuration
+<<<<<<< HEAD
 app.use(
   cors({
     origin: "*",
     credentials: true,
   })
 );
+=======
+app.use(cors());
+>>>>>>> b6864de29ef75dd1ffa6ee2e4067c98ffdd2baea
 
 // Parse JSON
 app.use(express.json());

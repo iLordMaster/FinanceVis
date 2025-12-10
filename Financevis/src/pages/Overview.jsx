@@ -130,7 +130,7 @@ const Overview = () => {
         totalIncome,
         totalExpenses,
         netSavings,
-        incomeStreams: uniqueIncomeCategories.size,
+        incomeStreams: incomeTransactions.length,
       });
 
       // Calculate total account balance
