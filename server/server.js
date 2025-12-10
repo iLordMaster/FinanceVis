@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./src/infrastructure/database/mongoose"); // Updated path
+const connectDB = require("./src/infrastructure/database/mongoose");
+
 require("dotenv").config();
 const morgan = require("morgan");
 const client = require("prom-client"); 

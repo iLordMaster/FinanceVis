@@ -1,8 +1,36 @@
+version: "3.9"
+
 services:
   server:
     build: .
+    container_name: financevis-server
     ports:
       - "5001:5001"
     env_file:
       - .env
     restart: always
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-external-labels: service=financevis,env=prod
+
+  loki:
+    image: grafana/loki:main-93bca4c
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: always
+
+  grafana:
+    image: grafana/grafana:main-ubuntu
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - loki
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
