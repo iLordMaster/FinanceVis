@@ -25,5 +25,5 @@ jobs:
             cd /home/azureuser/FinanceVis
             git pull
             cd Financevis
-            pm2 reload 8
+            /home/azureuser/.nvm/versions/node/v22.21.1/bin/pm2 reload 8
           debug: true
