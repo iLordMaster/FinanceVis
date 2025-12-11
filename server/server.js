@@ -15,7 +15,12 @@ client.collectDefaultMetrics();
 app.use(morgan("dev"));
 
 // Proper CORS configuration
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://financevis.trinibuy.co.uk",
+    credentials: true,
+  })
+);
 
 // Parse JSON
 app.use(express.json());
