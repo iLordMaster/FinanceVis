@@ -641,6 +641,27 @@
   background-color: #27272a;
 }
 
+.dropdown-item.create-account {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(168, 85, 247, 0.1) 100%
+  );
+  border-left: 3px solid #6366f1;
+}
+
+.dropdown-item.create-account:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(168, 85, 247, 0.15) 100%
+  );
+}
+
+.dropdown-item.create-account .dropdown-icon {
+  color: #6366f1;
+}
+
 .dropdown-item.logout {
   color: #f97316;
 }

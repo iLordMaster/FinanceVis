@@ -15,12 +15,15 @@ import { useUser } from "../../context/UserContext.jsx";
 import { useAccount } from "../../context/AccountContext.jsx";
 import { AccountApi } from "../../api/accountApi.js";
 import ProfileModal from "../ProfileModal.jsx";
+import CreateAccountModal from "../CreateAccountModal.jsx";
 
 const TopBar = ({ balance }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
+    useState(false);
   const [loadingAccounts, setLoadingAccounts] = useState(true);
 
   // Use AccountContext for shared state
@@ -95,6 +98,27 @@ const TopBar = ({ balance }) => {
   const handleProfileClick = () => {
     setIsDropdownOpen(false);
     setIsProfileModalOpen(true);
+  };
+
+  const handleCreateAccountClick = () => {
+    setIsDropdownOpen(false);
+    setIsCreateAccountModalOpen(true);
+  };
+
+  const handleAccountCreated = async (newAccount) => {
+    // Add the new account to the accounts list
+    setAccounts((prev) => [...prev, newAccount]);
+
+    // Optionally select the newly created account
+    setSelectedAccount(newAccount);
+
+    // Refresh accounts from server to ensure sync
+    try {
+      const response = await AccountApi.getAccounts();
+      setAccounts(response.accounts || []);
+    } catch (error) {
+      console.error("Error refreshing accounts:", error);
+    }
   };
 
   const handleAccountSelect = (account) => {
@@ -264,6 +288,17 @@ const TopBar = ({ balance }) => {
 
                   <div className="dropdown-divider"></div>
 
+                  {/* Create Account Option (shown when no accounts) */}
+                  {accounts.length === 0 && (
+                    <div
+                      className="dropdown-item create-account"
+                      onClick={handleCreateAccountClick}
+                    >
+                      <FaWallet className="dropdown-icon" />
+                      <span>Create Account</span>
+                    </div>
+                  )}
+
                   {/* Profile & Logout */}
                   <div className="dropdown-item" onClick={handleProfileClick}>
                     <FaUser className="dropdown-icon" />
@@ -308,6 +343,12 @@ const TopBar = ({ balance }) => {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
+      />
+
+      <CreateAccountModal
+        isOpen={isCreateAccountModalOpen}
+        onClose={() => setIsCreateAccountModalOpen(false)}
+        onAccountCreated={handleAccountCreated}
       />
     </>
   );
