@@ -1,5 +1,6 @@
 class Api {
-  static api_url = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+  static api_url =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
 
   static async request(url, options = {}) {
     const token = this.getToken();
