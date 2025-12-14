@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { UserApi } from "../../api/userApi";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import Api from "../../api/api";
 
 export default function DonutChart() {
   const [data, setData] = useState([]);
@@ -15,24 +9,24 @@ export default function DonutChart() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await UserApi.request('/api/dashboard/asset-summary');
-        
-        console.log('Asset summary API response:', response);
-        
+        const response = await Api.request("/api/dashboard/asset-summary");
+
+        console.log("Asset summary API response:", response);
+
         // Transform the API response to match the chart format
         if (Array.isArray(response)) {
-          const chartData = response.map(asset => ({
+          const chartData = response.map((asset) => ({
             name: asset.name,
             value: asset.value,
-            color: asset.color
+            color: asset.color,
           }));
           setData(chartData);
         } else {
-          console.error('Expected array from asset-summary but got:', response);
+          console.error("Expected array from asset-summary but got:", response);
           setData([]);
         }
       } catch (error) {
-        console.error('Error fetching asset summary:', error);
+        console.error("Error fetching asset summary:", error);
         setData([]);
       } finally {
         setLoading(false);
@@ -44,7 +38,15 @@ export default function DonutChart() {
 
   if (loading) {
     return (
-      <div style={{ width: "100%", height: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          width: "100%",
+          height: 300,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         Loading...
       </div>
     );
@@ -52,7 +54,16 @@ export default function DonutChart() {
 
   if (data.length === 0) {
     return (
-      <div style={{ width: "100%", height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+      <div
+        style={{
+          width: "100%",
+          height: 300,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#9ca3af",
+        }}
+      >
         No asset data available
       </div>
     );
@@ -65,16 +76,16 @@ export default function DonutChart() {
           <Tooltip
             wrapperStyle={{ color: "#fff" }}
             contentStyle={{
-                backgroundColor: "#1e293b",
-                border: "1px solid #334155",
-                borderRadius: "8px",
-                color: "#fff"        
+              backgroundColor: "#1e293b",
+              border: "1px solid #334155",
+              borderRadius: "8px",
+              color: "#fff",
             }}
             labelStyle={{
-                color: "#cbd5e1"     
+              color: "#cbd5e1",
             }}
             itemStyle={{
-                color: "#fff"        
+              color: "#fff",
             }}
             formatter={(value) => `$${value.toLocaleString()}`}
           />
@@ -86,7 +97,7 @@ export default function DonutChart() {
             cx="50%"
             cy="50%"
             outerRadius={100}
-            innerRadius={60}   
+            innerRadius={60}
             paddingAngle={2}
           >
             {data.map((entry, index) => (

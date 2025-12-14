@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { UserApi } from "../../api/userApi";
+import Api from "../../api/api";
 import { TransactionApi } from "../../api/transactionApi";
 import { useAccount } from "../../context/AccountContext";
 
@@ -108,7 +108,7 @@ export default function DualLineChart({ onDataLoaded }) {
           const accountParam = selectedAccount?.id
             ? `?accountId=${selectedAccount.id}`
             : "";
-          const response = await UserApi.request(
+          const response = await Api.request(
             `/api/dashboard/monthly-stats${accountParam}`
           );
 

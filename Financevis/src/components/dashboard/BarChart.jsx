@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { UserApi } from "../../api/userApi";
+import Api from "../../api/api";
 import { useAccount } from "../../context/AccountContext";
 
 export default function IncomeSourceChart({ selectedMonth }) {
@@ -68,7 +68,7 @@ export default function IncomeSourceChart({ selectedMonth }) {
         const accountParam = selectedAccount?.id
           ? `&accountId=${selectedAccount.id}`
           : "";
-        const response = await UserApi.request(
+        const response = await Api.request(
           `/api/dashboard/top-categories?type=INCOME&startDate=${startDateStr}&endDate=${endDateStr}${accountParam}`
         );
 

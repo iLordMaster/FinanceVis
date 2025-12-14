@@ -3,7 +3,7 @@ import { CategoryApi } from "../api/categoryApi";
 import { AccountApi } from "../api/accountApi";
 import { BudgetApi } from "../api/budgetApi";
 import { AssetApi } from "../api/assetApi";
-import { UserApi } from "../api/userApi";
+import { ProfileApi } from "../api/profileApi";
 
 /**
  * DashboardService - Aggregates data from multiple APIs for dashboard display

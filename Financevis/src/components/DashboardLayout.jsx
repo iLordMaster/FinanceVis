@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./dashboard/Sidebar";
 import TopBar from "./dashboard/TopBar";
-import { UserApi } from "../api/userApi";
+import { ProfileApi } from "../api/profileApi";
+import Api from "../api/api";
 import { useAccount } from "../context/AccountContext";
 import "../pages/Dashboard.css";
 
@@ -32,7 +33,7 @@ const DashboardLayout = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const accountsData = await UserApi.request(
+        const accountsData = await Api.request(
           "/api/dashboard/account-summary"
         );
         if (Array.isArray(accountsData)) {

@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { UserApi } from "../../api/userApi";
+import Api from "../../api/api";
 import { useAccount } from "../../context/AccountContext";
 
 export default function IncomeChart({ selectedMonth, type = "INCOME" }) {
@@ -73,7 +73,7 @@ export default function IncomeChart({ selectedMonth, type = "INCOME" }) {
         const accountParam = selectedAccount?.id
           ? `&accountId=${selectedAccount.id}`
           : "";
-        const response = await UserApi.request(
+        const response = await Api.request(
           `/api/transactions?startDate=${startDateStr}&endDate=${endDateStr}${accountParam}`
         );
 

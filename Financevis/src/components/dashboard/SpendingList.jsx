@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserApi } from "../../api/userApi";
+import Api from "../../api/api";
 import { useAccount } from "../../context/AccountContext";
 import {
   FaHome,
@@ -92,7 +92,7 @@ export default function SpendingList({ selectedMonth }) {
         const accountParam = selectedAccount?.id
           ? `&accountId=${selectedAccount.id}`
           : "";
-        const response = await UserApi.request(
+        const response = await Api.request(
           `/api/dashboard/top-categories?startDate=${startDateStr}&endDate=${endDateStr}${accountParam}`
         );
 

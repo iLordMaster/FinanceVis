@@ -5,7 +5,8 @@ import ChartPlaceholder from "../components/dashboard/ChartPlaceholder";
 import "./Dashboard.css";
 import { FaDog } from "react-icons/fa";
 import DualLineChart from "../components/dashboard/DualLineChart";
-import { UserApi } from "../api/userApi";
+import { ProfileApi } from "../api/profileApi";
+import Api from "../api/api";
 import AssetDonutChart from "../components/dashboard/AssetDonutChart";
 import AssetLegend from "../components/dashboard/AssetLegend";
 import LineChart from "../components/dashboard/LineChart";
@@ -37,7 +38,7 @@ const Dashboard = () => {
         /* REMOVED: Redundant monthly-stats fetch. Data now comes from DualLineChart via onDataLoaded */
 
         // Fetch accounts (always show all accounts for net worth calculation)
-        const accountsData = await UserApi.request(
+        const accountsData = await Api.request(
           "/api/dashboard/account-summary"
         );
         console.log("Accounts API response:", accountsData);
@@ -53,9 +54,7 @@ const Dashboard = () => {
         }
 
         // Fetch assets
-        const assetsData = await UserApi.request(
-          "/api/dashboard/asset-summary"
-        );
+        const assetsData = await Api.request("/api/dashboard/asset-summary");
         console.log("Assets API response:", assetsData);
         if (Array.isArray(assetsData)) {
           setAssets(assetsData);
@@ -139,7 +138,7 @@ const Dashboard = () => {
   const handleGoalSave = (newGoal) => {
     setIncomeGoal(newGoal);
     // Refresh accounts to get updated goal
-    UserApi.request("/api/dashboard/account-summary").then((accountsData) => {
+    Api.request("/api/dashboard/account-summary").then((accountsData) => {
       if (Array.isArray(accountsData)) {
         setAccounts(accountsData);
         setContextAccounts(accountsData);

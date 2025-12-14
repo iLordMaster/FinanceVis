@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useUser } from "../context/UserContext";
 import { TransactionApi } from "../api/transactionApi";
 import { CategoryApi } from "../api/categoryApi";
-import { UserApi } from "../api/userApi";
+import { ProfileApi } from "../api/profileApi";
+import Api from "../api/api";
 import { DashboardService } from "../services/DashboardService";
 import MetricCard from "../components/MetricCard";
 import DashboardCard from "../components/dashboard/DashboardCard";
@@ -74,7 +75,7 @@ const Overview = () => {
         // Use DashboardService for account summary
         DashboardService.getAccountSummary().then((res) => res.accounts),
         // Use API_BASE_URL to construct the full URL for dashboard stats
-        UserApi.request(`${UserApi.API_BASE_URL}/api/dashboard/monthly-stats`),
+        Api.request(`${Api.api_url}/dashboard/monthly-stats`),
         CategoryApi.getCategories("INCOME"),
         CategoryApi.getCategories("EXPENSE"),
       ]);
