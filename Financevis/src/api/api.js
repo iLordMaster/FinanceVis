@@ -1,6 +1,7 @@
 class Api {
   static api_url =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://financevis-backend.trinibuy.co.uk/";
 
   static async request(url, options = {}) {
     const token = this.getToken();
