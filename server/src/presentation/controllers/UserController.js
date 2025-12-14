@@ -1,3 +1,5 @@
+const logger = require("../../../config/logger");
+
 class UserController {
   constructor(
     getUserProfile,
@@ -38,6 +40,10 @@ class UserController {
         req.params.id,
         req.body
       );
+      logger.info("User profile updated successfully", {
+        userId: req.params.id,
+        updatedFields: Object.keys(req.body),
+      });
       res.json({
         message: "Profile updated successfully",
         user: result,
@@ -49,6 +55,10 @@ class UserController {
         res.status(400).json({ message: err.message });
       } else {
         console.error(err);
+        logger.error("Error updating profile", {
+          userId: req.params.id,
+          error: err.message,
+        });
         res
           .status(500)
           .json({ message: "Error updating profile", error: err.message });
@@ -80,12 +90,10 @@ class UserController {
         res.status(404).json({ message: err.message });
       } else {
         console.error(err);
-        res
-          .status(500)
-          .json({
-            message: "Error uploading profile picture",
-            error: err.message,
-          });
+        res.status(500).json({
+          message: "Error uploading profile picture",
+          error: err.message,
+        });
       }
     }
   }
@@ -107,12 +115,10 @@ class UserController {
         res.status(404).json({ message: err.message });
       } else {
         console.error(err);
-        res
-          .status(500)
-          .json({
-            message: "Error deleting profile picture",
-            error: err.message,
-          });
+        res.status(500).json({
+          message: "Error deleting profile picture",
+          error: err.message,
+        });
       }
     }
   }

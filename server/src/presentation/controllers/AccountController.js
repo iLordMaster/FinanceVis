@@ -1,3 +1,5 @@
+const logger = require("../../../config/logger");
+
 class AccountController {
   constructor(createAccount, getAccounts, updateAccount, deleteAccount) {
     this.createAccount = createAccount;
@@ -13,6 +15,10 @@ class AccountController {
         ...req.body,
       };
       const result = await this.createAccount.execute(accountData);
+      logger.info("Account created successfully", {
+        accountId: result.id,
+        userId: req.user.id,
+      });
       res.status(201).json({
         message: "Account created successfully",
         account: result,
@@ -22,6 +28,10 @@ class AccountController {
         res.status(400).json({ message: err.message });
       } else {
         console.error(err);
+        logger.error("Error creating account", {
+          error: err.message,
+          userId: req.user.id,
+        });
         res
           .status(500)
           .json({ message: "Error creating account", error: err.message });
@@ -65,12 +75,10 @@ class AccountController {
         res.status(403).json({ message: err.message });
       } else {
         console.error(err);
-        res
-          .status(500)
-          .json({
-            message: `Error updating account: ${err.message}`,
-            error: err.message,
-          });
+        res.status(500).json({
+          message: `Error updating account: ${err.message}`,
+          error: err.message,
+        });
       }
     }
   }

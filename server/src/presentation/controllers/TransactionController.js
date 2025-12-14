@@ -1,3 +1,5 @@
+const logger = require("../../../config/logger");
+
 class TransactionController {
   constructor(
     createTransaction,
@@ -18,6 +20,11 @@ class TransactionController {
         ...req.body,
       };
       const result = await this.createTransaction.execute(transactionData);
+      logger.info("Transaction created successfully", {
+        transactionId: result.id,
+        amount: result.amount,
+        userId: req.user.id,
+      });
       res.status(201).json({
         message: "Transaction created successfully",
         transaction: result,
@@ -36,6 +43,10 @@ class TransactionController {
         res.status(400).json({ message: err.message });
       } else {
         console.error(err);
+        logger.error("Error creating transaction", {
+          error: err.message,
+          userId: req.user.id,
+        });
         res
           .status(500)
           .json({ message: "Error creating transaction", error: err.message });
