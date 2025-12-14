@@ -10,6 +10,7 @@ import {
   FaUniversity,
   FaCreditCard,
   FaPiggyBank,
+  FaPlus,
 } from "react-icons/fa";
 import { useUser } from "../../context/UserContext.jsx";
 import { useAccount } from "../../context/AccountContext.jsx";
@@ -257,11 +258,9 @@ const TopBar = ({ balance }) => {
                       {formatCurrency(totalBalance)}
                     </span>
                   </div>
-
                   {accounts.length > 0 && (
                     <div className="dropdown-divider"></div>
                   )}
-
                   {/* Individual Accounts */}
                   {[...accounts]
                     .sort((a, b) => (b.balance || 0) - (a.balance || 0))
@@ -285,20 +284,17 @@ const TopBar = ({ balance }) => {
                         </span>
                       </div>
                     ))}
-
                   <div className="dropdown-divider"></div>
-
                   {/* Create Account Option (shown when no accounts) */}
                   {accounts.length === 0 && (
                     <div
                       className="dropdown-item create-account"
                       onClick={handleCreateAccountClick}
                     >
-                      <FaWallet className="dropdown-icon" />
-                      <span>Create Account</span>
+                      <FaPlus className="dropdown-icon" />
+                      <span>Create New Account</span>
                     </div>
                   )}
-
                   {/* Profile & Logout */}
                   <div className="dropdown-item" onClick={handleProfileClick}>
                     <FaUser className="dropdown-icon" />
