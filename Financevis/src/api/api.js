@@ -1,71 +1,109 @@
-class Api {
-  static api_url =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://financevis-backend.trinibuy.co.uk/";
+export default class Api {
+  static API_BASE_URL = "https://financevis-backend.trinibuy.co.uk";
+  static get api_url() {
+    return this.API_BASE_URL + "/api";
+  }
 
-  static async request(url, options = {}) {
-    const token = this.getToken();
+  static async request(endpoint, options = {}) {
+    if (!endpoint.startsWith("http")) {
+      endpoint = Api.API_BASE_URL + endpoint;
+    }
+
+    console.log("[UserApi] Making request to:", endpoint);
+    console.log("[UserApi] Api Url:", this.api_url);
+    const tokenStr = localStorage.getItem("token");
+    let token = null;
+    if (tokenStr) {
+      try {
+        const tokenObj = JSON.parse(tokenStr);
+        token = tokenObj.token;
+      } catch (e) {
+        console.error("[UserApi] Failed to parse token:", e);
+      }
+    }
 
     const headers = {
-      "Content-Type": "application/json",
       ...options.headers,
     };
+
+    // Only set Content-Type for non-FormData requests
+    // FormData needs the browser to set Content-Type automatically with the boundary
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    // Don't set Content-Type for FormData (browser will set it with boundary)
-    if (options.body instanceof FormData) {
-      delete headers["Content-Type"];
-    }
+    const config = {
+      ...options,
+      headers,
+      mode: "cors",
+      credentials: "include",
+    };
 
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
+    // Wrap the fetch call for retry logic
+    return this.retryRequest(async () => {
+      const response = await fetch(endpoint, config);
 
-      // Handle 401 Unauthorized - token expired or invalid
-      if (response.status === 401) {
-        // Clear auth data
+      // Handle authentication errors (don't retry these)
+      if (response.status === 401 || response.status === 403) {
+        console.error("[UserApi] Authentication failed - logging out");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-
-        // Redirect to login
         window.location.href = "/login";
-        throw new Error("Session expired. Please login again.");
+
+        const error = new Error("Session expired. Please login again.");
+        error.isAuthError = true;
+        throw error;
       }
 
-      // Handle other error responses
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      // Parse and return JSON response
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "API request failed");
+      }
+
       return data;
-    } catch (error) {
-      console.error("API request failed:", error);
-      throw error;
-    }
+    });
   }
 
-  static getToken() {
-    try {
-      const tokenData = localStorage.getItem("token");
-      if (!tokenData) return null;
+  static async retryRequest(fn, maxRetries = 3, initialDelay = 1000) {
+    let lastError;
 
-      const parsed = JSON.parse(tokenData);
-      return parsed.token || null;
-    } catch (error) {
-      console.error("Error getting token:", error);
-      return null;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error;
+
+        // Don't retry on authentication errors - these are permanent
+        if (error.isAuthError) {
+          throw error;
+        }
+
+        // Don't retry on the last attempt
+        if (attempt === maxRetries - 1) {
+          break;
+        }
+
+        // Calculate delay with exponential backoff
+        const delayMs = initialDelay * Math.pow(2, attempt);
+        console.warn(
+          `[UserApi] Request failed (attempt ${
+            attempt + 1
+          }/${maxRetries}), retrying in ${delayMs}ms...`,
+          error.message
+        );
+        await this.delay(delayMs);
+      }
     }
+
+    throw lastError;
+  }
+
+  static async delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
-
-export default Api;
